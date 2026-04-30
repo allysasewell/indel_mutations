@@ -200,12 +200,7 @@ sequences.append(sequence22)
 sequenceY = GetSequence('hg19.fa', 'chrY')
 sequences.append(sequenceY)
 
-print(sequenceX[79010136:79010141])
-print(sequenceX[115938308:115938313])
-print(sequence2[70562782:70562794])
-print(sequence3[167761313:167761323])
-print(sequence4[134583517:134583532])
-print(sequenceY[13294295:13294298])
+
 
 acral = "Acral_simple_somatic_mutation_MELA_AU_DIPs.bed"
 cutaneous = "Cutaneous_simple_somatic_mutation_MELA_AU_DIPs.bed"
@@ -2468,7 +2463,7 @@ f13 = open('new_homopolymer_counts10+.txt', 'w+')
 
 
 
-#Obtain the total number of bases in the yeast genome in sequences of each homopolymer length
+#Obtain the total number of bases in the human genome in sequences of each homopolymer length
 def NormalizeHomopolymer(sequences, lengths, file):
     homopolymer_dict = {}
     C_dict = {}
