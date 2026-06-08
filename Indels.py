@@ -1,5 +1,8 @@
 
 
+
+
+
 def GetReverseComplement(str):
     if str == 'NA':
         return 
@@ -122,17 +125,17 @@ def GetHomopolymerLength(sequence, mut_pos1, mut_pos, mut_position):
             else:
                 flag = False
                
-                if mut_position <= end_position  and mut_position >= end_position - (length - 1 ):
+                if mut_position <= end_position  and mut_position >= (end_position - (length - 1 )):
                      # or [(mut_position2 <= end_position)  and (mut_position2 >= end_position - (length - 1 ))]:
                      lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
-                elif mut_position2 <= end_position  and mut_position2 >= end_position - (length - 1 ):
+                elif mut_position2 <= end_position  and mut_position2 >= (end_position - (length - 1 )):
                     lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
     
-        if mut_position <= end_position  and mut_position >= end_position - (length - 1 ):
+        if mut_position <= end_position  and mut_position >= (end_position - (length - 1 )):
         
     
             lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position) )] = length
-        elif mut_position2 <= end_position  and mut_position2 >= end_position - (length - 1 ):
+        elif mut_position2 <= end_position  and mut_position2 >= (end_position - (length - 1 )):
                     lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length   
     if len(lengths) == 0:
         return 1, (mut_pos, mut_pos)
@@ -160,11 +163,11 @@ def GetHomopolymerLengthIns(sequence, mut_pos1, mut_pos, mut_position, strand):
             else:
                 flag = False
                
-                if mut_position <= end_position + 1  and (mut_position) >= end_position - (length - 1):
+                if mut_position <= end_position + 1  and (mut_position) >= (end_position - (length - 1)):
                         lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
               
     
-            if mut_position <= end_position + 1   and mut_position >= end_position - (length - 1):
+            if mut_position <= end_position + 1   and mut_position >= (end_position - (length - 1)):
                 lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
          
     
@@ -438,7 +441,7 @@ for i1 in range(0, len(isolate)):
     else:
         isolate_list[(isolate[i1], genotype[i1])] .append((position2[i1], str(chromosome[i1]), trinucleotide[i1], mutation[i1], strand[i1], mutation_type[i1], isolate[i1], allele[i1]))
     
-def MutationsPerIsolate( isolate_list):  #Finds the number of deletions and insertions for each isolate and calculates the average 
+def MutationsPerIsolate( isolate_list, file1, file2, file3):  #Finds the number of deletions and insertions for each isolate and calculates the average 
     #mutations per isolate for WT, rad16, rad26, and rad30
     Deletions = {'WT': [], 'rad16': [], 'rad26': [], 'rad30': []}
     Insertions = {'WT': [], 'rad16': [], 'rad26': [], 'rad30': []}
@@ -459,14 +462,14 @@ def MutationsPerIsolate( isolate_list):  #Finds the number of deletions and inse
         count = 0
 
         for a in range(0, len(isolate_list[key])):
-            #if isolate_list[key][a][5] == 'DIP' or isolate_list[key][a][5] == 'Deletion' or isolate_list[key][a][5] == 'Insertion':
-            if isolate_list[key][a][5] == 'SNP' or isolate_list[key][a][5] == 'SNV':
+            if isolate_list[key][a][5] == 'DIP' or isolate_list[key][a][5] == 'Deletion' or isolate_list[key][a][5] == 'Insertion':
+            #if isolate_list[key][a][5] == 'SNP' or isolate_list[key][a][5] == 'SNV':
 
                 count = count + 1
-                #if '-' in isolate_list[key][a][3]:# and  len(isolate_list[key][a][7]) == 1:
-                    #d_count = d_count + 1
-                #elif '-' not in isolate_list[key][a][3]:# and len(isolate_list[key][a][3]) == 1:
-                    #i_count = i_count + 1
+                if '-' in isolate_list[key][a][3]:# and  len(isolate_list[key][a][7]) == 1:
+                    d_count = d_count + 1
+                elif '-' not in isolate_list[key][a][3]:# and len(isolate_list[key][a][3]) == 1:
+                    i_count = i_count + 1
         if key[1] == 'WT':
             Deletions['WT'].append(d_count)
             Insertions['WT'].append(i_count)
@@ -483,26 +486,51 @@ def MutationsPerIsolate( isolate_list):  #Finds the number of deletions and inse
             Deletions['rad30'].append(d_count)
             Insertions['rad30'].append(i_count) 
             All['rad30'].append(count) 
+    file1.write('Deletions: ')
+    file1.write('\n')
+    file2.write('Deletions: ')
+    file2.write('\n')
+    file3.write('Deletions: ')
+    file3.write('\n')
     for b in Deletions['WT']:
         average_WT_deletion = average_WT_deletion+ b
+        file1.write(str(b))
+        file1.write('\n')
     average_WT_deletion = average_WT_deletion/len(Deletions['WT'])
     for c in Deletions['rad16']:
+        file2.write(str(c))
+        file2.write('\n')
         average_rad16_deletion = average_rad16_deletion+ c
     average_rad16_deletion = average_rad16_deletion/(len(Deletions['rad16']))
     for d in Deletions['rad26']:
+        file3.write(str(d))
+        file3.write('\n')
         average_rad26_deletion = average_rad26_deletion+ d
     average_rad26_deletion = average_rad26_deletion/len(Deletions['rad26'])
     for e in Deletions['rad30']:
         average_rad30_deletion = average_rad30_deletion+ e
     average_rad30_deletion = average_rad30_deletion/len(Deletions['rad30'])
 
+    file1.write('Insertions: ')
+    file1.write('\n')
+    file2.write('Insertions: ')
+    file2.write('\n')
+    file3.write('Insertions: ')
+    file3.write('\n')
+
     for f in Insertions['WT']:
+        file1.write(str(f))
+        file1.write('\n')
         average_WT_insertion = average_WT_insertion + f
     average_WT_insertion = average_WT_insertion/len(Insertions['WT'])
     for g in Insertions['rad16']:
+        file2.write(str(g))
+        file2.write('\n')
         average_rad16_insertion = average_rad16_insertion + g
     average_rad16_insertion = average_rad16_insertion/len(Insertions['rad16'])
     for h in Insertions['rad26']:
+        file3.write(str(h))
+        file3.write('\n')
         average_rad26_insertion = average_rad26_insertion + h
     average_rad26_insertion = average_rad26_insertion/len(Insertions['rad26'])
     for i in Insertions['rad30']:
@@ -514,8 +542,10 @@ def MutationsPerIsolate( isolate_list):  #Finds the number of deletions and inse
     
     return Deletions, Insertions, All
        
-
-MutationsPerIsolate(isolate_list)
+file1 = open('WT_mutationsperisolate', 'w+')
+file2 = open('rad16_mutationsperisolate', 'w+')
+file3 = open('rad26_mutationsperisolate', 'w+')
+MutationsPerIsolate(isolate_list, file1, file2, file3)
 
 
 WT_deletions = {}
@@ -823,12 +853,12 @@ def MakeInsertionFile(file1, file2, file3, file4, lengths):  #Makes bed files fo
                 file2.write(line[0] + '\t' + line[1] + '\t' + line[2] + '\t' + line[3] + '\t' + line[4] + '\t' + line[5]  + '\t' + line[6])
                 file2.write('\n')
                
-            if lengths[n] >= 4: #Insertions in homopolymers
-                    file3.write(line[0] + '\t' + line[1] + '\t' + line[2] + '\t' + line[3] + '\t' + line[4] + '\t' + line[5]  + '\t' + line[6])
-                    file3.write('\n')
-            else: #Insertions not in homopolymers
-                    file4.write(line[0] + '\t' + line[1] + '\t' + line[2] + '\t' + line[3] + '\t' + line[4] + '\t' + line[5]  + '\t' + line[6])
-                    file4.write('\n')
+                if lengths[n] >= 4: #Insertions in homopolymers
+                        file3.write(line[0] + '\t' + line[1] + '\t' + line[2] + '\t' + line[3] + '\t' + line[4] + '\t' + line[5]  + '\t' + line[6])
+                        file3.write('\n')
+                else: #Insertions not in homopolymers
+                        file4.write(line[0] + '\t' + line[1] + '\t' + line[2] + '\t' + line[3] + '\t' + line[4] + '\t' + line[5]  + '\t' + line[6])
+                        file4.write('\n')
 
                
 
@@ -2500,8 +2530,18 @@ for i1 in range(0, len(isolates2)):
     else:
         isolate_list2[(isolates2[i1], genotype2[i1])] .append((position2_2[i1],  str(chromosome2[i1]), trinucleotide2[i1], mutation2[i1], strand2[i1], mutation_type_2[i1], isolates2[i1], allele2[i1]))
 
-MutationsPerIsolate(isolate_list2)
 
+file4 = open('UVB_WT_mutationsperisolate', 'w+')
+file5 = open('UVB_rad16_mutationsperisolate', 'w+')
+file6 = open('UVB_rad26_mutationsperisolate', 'w+')
+MutationsPerIsolate(isolate_list2, file4, file5, file6)
+
+file1.close()
+file2.close()
+file3.close()
+file4.close()
+file5.close()
+file6.close()
 
 WT_insertions2 = {}
 WT_deletions2 = {}
