@@ -2108,6 +2108,7 @@ WT_multinucleotide = WT_data[0]
 WT_lengths = WT_data[8]
 WT_allele = WT_data[7]
 WT_lengths2 = homopolymer_data2[8]
+WT_lengths3 = homopolymer_data[8]
 
 
 rad16_data = homopolymer_combined_data16
@@ -2122,6 +2123,7 @@ rad16_multinucleotide = rad16_data[0]
 rad16_lengths = rad16_data[8]
 rad16_allele = rad16_data[7]
 rad16_lengths2 = homopolymer_data2_16[8]
+rad16_lengths3 = homopolymer_data16[8]
 
 rad26_data = homopolymer_combined_data26
 
@@ -2136,6 +2138,7 @@ rad26_multinucleotide = rad26_data[0]
 rad26_lengths = rad26_data[8]
 rad26_allele = rad26_data[7]
 rad26_lengths2 = homopolymer_data2_26[8]
+rad26_lengths3 = homopolymer_data26[8]
 
 rad30_data = homopolymer_data30
 rad30_isolate = rad30_data[4]
@@ -2167,9 +2170,9 @@ MakeTriNucFile(a1, a2, a3, a4,WT_lengths2 )
 MakeTriNucFile(b1, b2, b3, b4, rad16_lengths2)   
 MakeTriNucFile(d1, d2, d3, d4, rad26_lengths2)
 MakeTriNucFile(e1, e2, e3, e4, rad30_lengths2) 
-MakeInsertionFile(g1, g2, g3, g4, WT_lengths)
-MakeInsertionFile(h1, h2, h3, h4, rad16_lengths)   
-MakeInsertionFile(j1, j2, j3, j4, rad26_lengths)
+MakeInsertionFile(g1, g2, g3, g4, WT_lengths3)
+MakeInsertionFile(h1, h2, h3, h4, rad16_lengths3)   
+MakeInsertionFile(j1, j2, j3, j4, rad26_lengths3)
 MakeInsertionFile(k1, k2, k3, k4, rad30_lengths) 
 #MakeTriNucFile(ca, cb, cc, cd)
 #MakeTriNucFile(c2a, c2b, c2c, c2d)
@@ -2812,15 +2815,18 @@ homopolymer_UVB_data26_2 = MakeMultiNucFile(d1b, d6b)
 rad26_del_lengths = homopolymer_UVB_data26_2[8]
 rad30_del_lengths = MakeMultiNucFile(e1b, e6b)[8]
 homopolymer_UVB_data = MakeMultiNucFile(m1, m6)
+WT_ins_lengths = homopolymer_UVB_data[8]
 polymer_counts_UVB = GetPolymerCounts(homopolymer_UVB_data[0],  homopolymer_UVB_data[2], homopolymer_UVB_data[3], homopolymer_UVB_data[4], homopolymer_UVB_data[5], homopolymer_UVB_data[6], homopolymer_UVB_data[7], homopolymer_UVB_data[8])[0]
 homopolymerB = GetPolymerCounts(homopolymer_UVB_data[0],  homopolymer_UVB_data[2], homopolymer_UVB_data[3], homopolymer_UVB_data[4], homopolymer_UVB_data[5], homopolymer_UVB_data[6], homopolymer_UVB_data[7], homopolymer_UVB_data[8])[1]
 homopolymer_UVB_data16 = MakeMultiNucFile(h1b, h6b)
+rad16_ins_lengths = homopolymer_UVB_data16[8]
 polymer_counts_UVB16 = GetPolymerCounts(homopolymer_UVB_data16[0],  homopolymer_UVB_data16[2], homopolymer_UVB_data16[3], homopolymer_UVB_data16[4], homopolymer_UVB_data16[5], homopolymer_UVB_data16[6], homopolymer_UVB_data16[7], homopolymer_UVB_data16[8])[0]
 homopolymer16B = GetPolymerCounts(homopolymer_UVB_data16[0],  homopolymer_UVB_data16[2], homopolymer_UVB_data16[3], homopolymer_UVB_data16[4], homopolymer_UVB_data16[5], homopolymer_UVB_data16[6], homopolymer_UVB_data16[7], homopolymer_UVB_data16[8])[1]
 homopolymer_UVB_data30 = MakeMultiNucFile(k1b, k6b)
 polymer_counts_UVB30 = GetPolymerCounts(homopolymer_UVB_data30[0],  homopolymer_UVB_data30[2], homopolymer_UVB_data30[3], homopolymer_UVB_data30[4], homopolymer_UVB_data30[5], homopolymer_UVB_data30[6], homopolymer_UVB_data30[7], homopolymer_UVB_data30[8])[0]
 homopolymer30B = GetPolymerCounts(homopolymer_UVB_data30[0],  homopolymer_UVB_data30[2], homopolymer_UVB_data30[3], homopolymer_UVB_data30[4], homopolymer_UVB_data30[5], homopolymer_UVB_data30[6], homopolymer_UVB_data30[7], homopolymer_UVB_data30[8])[1]
 homopolymer_UVB_data26 = MakeMultiNucFile(j1b, j6b)
+rad26_ins_lengths = homopolymer_UVB_data26[8]
 polymer_counts_UVB26 = GetPolymerCounts(homopolymer_UVB_data26[0],  homopolymer_UVB_data26[2], homopolymer_UVB_data26[3], homopolymer_UVB_data26[4], homopolymer_UVB_data26[5], homopolymer_UVB_data26[6], homopolymer_UVB_data26[7], homopolymer_UVB_data26[8])[0]
 homopolymer26B = GetPolymerCounts(homopolymer_UVB_data26[0],  homopolymer_UVB_data26[2], homopolymer_UVB_data26[3], homopolymer_UVB_data26[4], homopolymer_UVB_data26[5], homopolymer_UVB_data26[6], homopolymer_UVB_data26[7], homopolymer_UVB_data26[8])[1]
 
@@ -2894,9 +2900,9 @@ rad30_lengthsB = rad30_dataB[8]
 MakeTriNucFile(a1b, a2b, a3b, a4b, WT_del_lengths)
 MakeTriNucFile(b1b, b2b, b3b, b4b, rad16_del_lengths)   
 MakeTriNucFile(d1b, d2b, d3b, d4b, rad26_del_lengths)
-MakeInsertionFile(m1, m2, m3, m4, WT_lengthsB)
-MakeInsertionFile(h1b, h2b, h3b, h4b, rad16_lengthsB)
-MakeInsertionFile(j1b, j2b, j3b, j4b, rad26_lengthsB)
+MakeInsertionFile(m1, m2, m3, m4, WT_ins_lengths)
+MakeInsertionFile(h1b, h2b, h3b, h4b, rad16_ins_lengths)
+MakeInsertionFile(j1b, j2b, j3b, j4b, rad26_ins_lengths)
 
 m2.close()
 m3.close()
