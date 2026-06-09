@@ -1,3 +1,64 @@
+def GetSequence(file):
+    f1 = open(file)
+    sequence1 = f1.read()
+    sequence1 = str(sequence1.strip().upper())
+    sequence1 = ''.join(sequence1.split('\n'))
+    return sequence1
+
+
+sequences2 = []
+sequence1 = GetSequence('chr1.txt')
+sequences2.append(sequence1)
+print(len(sequence1))
+sequence2 = GetSequence('chr2.txt')
+sequences2.append(sequence2)
+print(len(sequence2))
+sequence3 = GetSequence('chr3.txt')
+sequences2.append(sequence3)
+print(len(sequence3))
+sequence4 = GetSequence('chr4.txt')
+sequences2.append(sequence4)
+print(len(sequence4))
+sequence5 = GetSequence('chr5.txt')
+sequences2.append(sequence5)
+print(len(sequence5))
+sequence6 = GetSequence('chr6.txt')
+print(len(sequence6))
+sequences2.append(sequence6)
+sequence7 = GetSequence('chr7.txt')
+sequences2.append(sequence7)
+print(len(sequence7))
+sequence8 = GetSequence('chr8.txt')
+sequences2.append(sequence8)
+print(len(sequence8))
+sequence9 = GetSequence('chr9.txt')
+sequences2.append(sequence9)
+print(len(sequence9))
+sequence10 = GetSequence('chr10.txt')
+sequences2.append(sequence10)
+print(len(sequence10))
+sequence11 = GetSequence('chr11.txt')
+print(len(sequence11))
+sequences2.append(sequence11)
+sequence12 = GetSequence('chr12.txt')
+print(len(sequence12))
+sequences2.append(sequence12)
+sequence13 = GetSequence('chr13.txt')
+sequences2.append(sequence13)
+print(len(sequence13))
+sequence14 = GetSequence('chr14.txt')
+sequences2.append(sequence14)
+print(len(sequence14))
+sequence15 = GetSequence('chr15.txt')
+sequences2.append(sequence15)
+print(len(sequence15))
+sequence16 = GetSequence('chr16.txt')
+sequences2.append(sequence16)
+print(len(sequence16))
+
+
+
+
 
 #Takes file from perl scripts and finds total transcribed strand and non-transcribed strand counts
 def ContextCounts(file1, file2):
@@ -62,10 +123,10 @@ def ContextCounts(file1, file2):
 
 
 
-d = open("WT_singlebase_deletions_TriNuc_TrxStrandBins.txt")
-d1 = open("rad16_singlebase_deletions_TriNuc_TrxStrandBins.txt")
-d2 = open("rad26_singlebase_deletions_TriNuc_TrxStrandBins.txt")
-d3 = open("rad30_singlebase_deletions_TriNuc_TrxStrandBins.txt")
+d = open("WT_singlebase_deletions_Trinuc_TrxStrandBins.txt")
+d1 = open("rad16_singlebase_deletions_Trinuc_TrxStrandBins.txt")
+d2 = open("rad26_singlebase_deletions_Trinuc_TrxStrandBins.txt")
+d3 = open("rad30_singlebase_deletions_Trinuc_TrxStrandBins.txt")
 e = open("WT_deletions_strandresults.txt", 'w+')
 e1 = open("rad16_deletions_strandresults.txt", 'w+')
 e2 = open("rad26_deletions_strandresults.txt", 'w+')
@@ -90,10 +151,10 @@ e9 = open("rad26_homopolymer_singleinsertions_strandresults.txt", 'w+')
 e11 = open("rad30_homopolymer_singleinsertions_strandresults.txt", 'w+')
 
 
-h = open("UVB_WT_singlebase_deletions_TriNuc_TrxStrandBins.txt")
-h1 = open("UVB_rad16_singlebase_deletions_TriNuc_TrxStrandBins.txt")
-h2 = open("UVB_rad26_singlebase_deletions_TriNuc_TrxStrandBins.txt")
-h3 = open("UVB_rad30_singlebase_deletions_TriNuc_TrxStrandBins.txt")
+h = open("UVB_WT_singlebase_deletions_Trinuc_TrxStrandBins.txt")
+h1 = open("UVB_rad16_singlebase_deletions_Trinuc_TrxStrandBins.txt")
+h2 = open("UVB_rad26_singlebase_deletions_Trinuc_TrxStrandBins.txt")
+h3 = open("UVB_rad30_singlebase_deletions_Trinuc_TrxStrandBins.txt")
 i = open("UVB_WT_deletions_strandresults.txt", 'w+')
 i1 = open("UVB_rad16_deletions_strandresults.txt", 'w+')
 i2 = open("UVB_rad26_deletions_strandresults.txt", 'w+')
@@ -175,28 +236,28 @@ z4 = open("rad30_singlebase_substitutionsv2_strandresults.txt", 'w+')
 
 
 
-ContextCounts(d, e)
-ContextCounts(d1, e1)
-ContextCounts(d2, e2)
+WT_counts = ContextCounts(d, e)
+rad16_counts = ContextCounts(d1, e1)
+rad26_counts = ContextCounts(d2, e2)
 ContextCounts(d3, e3)
-ContextCounts(d4, e4)
-ContextCounts(d5, e5)
-ContextCounts(d6, e6)
-ContextCounts(d7, e7)
-ContextCounts(d8, e8)
-ContextCounts(d9, e9)
+WT_HPdel_counts = ContextCounts(d4, e4)
+rad16_HPdel_counts = ContextCounts(d5, e5)
+rad26_HPdel_counts = ContextCounts(d6, e6)
+WT_HPins_counts = ContextCounts(d7, e7)
+rad16_HPins_counts = ContextCounts(d8, e8)
+rad26_HPins_counts = ContextCounts(d9, e9)
 ContextCounts(d10, e10)
 ContextCounts(d11, e11)
-ContextCounts(h, i)
-ContextCounts(h1, i1)
-ContextCounts(h2, i2)
+WT_countsB = ContextCounts(h, i)
+rad16_countsB = ContextCounts(h1, i1)
+rad26_countsB = ContextCounts(h2, i2)
 ContextCounts(h3, i3)
-ContextCounts(h4, i4)
-ContextCounts(h5, i5)
-ContextCounts(h6, i6)
-ContextCounts(h7, i7)
-ContextCounts(h8, i8)
-ContextCounts(h9, i9)
+WT_HPdel_countsB = ContextCounts(h4, i4)
+rad16_HPdel_countsB = ContextCounts(h5, i5)
+rad26_HPdel_countsB = ContextCounts(h6, i6)
+WT_HPins_countsB = ContextCounts(h7, i7)
+rad16_HPins_countsB = ContextCounts(h8, i8)
+rad26_HPins_countsB = ContextCounts(h9, i9)
 ContextCounts(z1, z3)
 ContextCounts(z2, z4)
 
@@ -306,6 +367,7 @@ w2.close()
 w3.close()
 
 
+file = open("Iyer_saccer3_genecoord_noverlap_expand_strand_trinucfreq.txt")
 #Finds the number of T and C bases on the NTS and TS
 def FindTC(file):
     AT_NTS = 0
@@ -325,11 +387,141 @@ def FindTC(file):
                  CG_NTS = CG_NTS + int(line[2])
     return AT_NTS, AT_TS, CG_NTS, CG_TS
 
+strand_numbers = FindTC(file)
+
+NTS_mutations = strand_numbers[0] + strand_numbers[2]
+TS_mutations = strand_numbers[1] + strand_numbers[3]
+
+file.close()
+
+with open('Iyer_saccer3_genecoord_noverlap.bed') as f2:
+    data3 = f2.read()
+lines3 = [s.strip().split() for s in data3.splitlines()]
+chr3 = []
+pos1_3 = []
+pos2_3 = []
+strand_data3 = []
+for line in lines3:
+    chr3.append(line[0])
+    pos1_3.append(int(line[1]))
+    pos2_3.append(int(line[2]))
+    strand_data3.append(line[5])
+
+
+
+TS_base = 0
+NTS_base = 0
+for x in range (0, len(chr3)):
+    if chr3[x] == 'chrI':
+        sequence = sequence1
+    if chr3[x] == 'chrII':
+        sequence = sequence2
+    if chr3[x] == 'chrIII':
+        sequence = sequence3
+    if chr3[x] == 'chrIV':
+        sequence = sequence4
+    if chr3[x] == 'chrV':
+        sequence = sequence5
+    if chr3[x] == 'chrVI':
+        sequence = sequence6
+    if chr3[x] == 'chrVII':
+        sequence = sequence7
+    if chr3[x] == 'chrVIII':
+        sequence = sequence8
+    if chr3[x] == 'chrIX':
+        sequence = sequence9
+    if chr3[x] == 'chrX':
+        sequence = sequence10
+    if chr3[x] == 'chrXI':
+        sequence = sequence11
+    if chr3[x] == 'chrXII':
+        sequence = sequence12
+    if chr3[x] == 'chrXIII':
+        sequence = sequence13
+    if chr3[x] == 'chrXIV':
+        sequence = sequence14
+    if chr3[x] == 'chrXV':
+        sequence = sequence15
+    if chr3[x] == 'chrXVI':
+        sequence = sequence16
+    #for i in range(0, (pos2_3[x] - pos1_3[x]) + 1):
+    b = pos1_3[x]
+    while b <= (pos2_3[x]) - 1:
+        #for b in range(0, len(sequence) - 1):
+            polymer_range = {}
+            length = 1
+            if sequence[b] != 'N':# and b not in coordinates:
+                length = 1
+                i = 1
+                polymer_range[0] = b
+                while sequence[b] == sequence[b + i]:
+                    if (b + i) <= (pos2_3[x]) - 1:
+                        polymer_range[1] = b + i
+                        length = length + 1
+                        i = i + 1
+                    else:
+                        break
+                   
+              
+
+                if length >= 4:
+                
+                    if strand_data3[x] == '+':
+                                if sequence[b] == 'T' or sequence[b] == 'C':
+                                        NTS_base = NTS_base + length
+                                        
+                                if sequence[b] == 'A' or sequence[b] == 'G':
+                                        TS_base = TS_base + length
+                    elif strand_data3[x] == '-':
+                                if sequence[b] == 'A' or sequence[b] == 'G':
+                                        NTS_base = NTS_base + length
+                                if sequence[b] == 'T' or sequence[b] == 'C':
+                                        TS_base = TS_base + length
+                b = b + length
+print(NTS_base)
+print(TS_base)
+
+
+
+
 #Caculates normalized percentages on the NTS and TS based on sequence context
 def FindNormalizedRatio(NTS_count, TS_count, NTS_mutations, TS_mutations):
-    mutation_ratio = NTS_mutations/TS_mutations
-    base_ratio = TS_count/NTS_count
+    mutation_ratio = TS_mutations/NTS_mutations
+    base_ratio = NTS_count/TS_count
     ratio = mutation_ratio * base_ratio
     NTS_percentage = (ratio * 100)/ (ratio + 1)
     TS_percentage = 100/ (ratio + 1)
     return NTS_percentage, TS_percentage
+
+
+FindNormalizedRatio(WT_counts[0], WT_counts[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(rad16_counts[0], rad16_counts[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(rad26_counts[0], rad26_counts[1], NTS_mutations, TS_mutations)
+
+FindNormalizedRatio(WT_countsB[0], WT_countsB[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(rad16_countsB[0], rad16_countsB[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(rad26_countsB[0], rad26_countsB[1], NTS_mutations, TS_mutations)
+
+FindNormalizedRatio(WT_HPdel_counts[0] + WT_HPins_counts[0], WT_HPdel_counts[1] + WT_HPins_counts[1], NTS_base, TS_base)
+FindNormalizedRatio(rad16_HPdel_counts[0] + rad16_HPins_counts[0], rad16_HPdel_counts[1] + rad16_HPins_counts[1], NTS_base, TS_base)
+FindNormalizedRatio(rad26_HPdel_counts[0] + rad26_HPins_counts[0], rad26_HPdel_counts[1] + rad26_HPins_counts[1], NTS_base, TS_base)
+
+
+# FindNormalizedRatio(WT_HPins_counts[0], WT_HPins_counts[1], NTS_base, TS_base)
+# FindNormalizedRatio(rad16_HPins_counts[0], rad16_HPins_counts[1], NTS_base, TS_base)
+# FindNormalizedRatio(rad26_HPins_counts[0], rad26_HPins_counts[1], NTS_base, TS_base)
+
+FindNormalizedRatio(WT_HPdel_countsB[0] + WT_HPins_countsB[0], WT_HPdel_countsB[1] + WT_HPins_countsB[1], NTS_base, TS_base)
+FindNormalizedRatio(rad16_HPdel_countsB[0] + rad16_HPins_countsB[0], rad16_HPdel_countsB[1] + rad16_HPins_countsB[1], NTS_base, TS_base)
+FindNormalizedRatio(rad26_HPdel_countsB[0] + rad26_HPins_countsB[0], rad26_HPdel_countsB[1] + rad26_HPins_countsB[1], NTS_base, TS_base)
+
+
+# FindNormalizedRatio(WT_HPins_countsB[0], WT_HPins_countsB[1], NTS_base, TS_base)
+# FindNormalizedRatio(rad16_HPins_countsB[0], rad16_HPins_countsB[1], NTS_base, TS_base)
+# FindNormalizedRatio(rad26_HPins_countsB[0], rad26_HPins_countsB[1], NTS_base, TS_base)
+
+
+
+
+
+
