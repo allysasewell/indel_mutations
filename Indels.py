@@ -3240,13 +3240,13 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                         new_list2[j] = list2_key[i]
 
             if sorted_list[0][1] == sorted_list[1][1] and (int(sorted_list[1][0]) <= int((sorted_list[ 0][0])) + 10):# and (int(sorted_list[1][0]) != int((sorted_list[ 0][0]))):
-                #if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
-                if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP"):    
+                if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
+                #if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP"):    
                     clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][0])] = [sorted_list[0]]
                  
 
-                #if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys() and (sorted_list[1][5] == "DIP" or sorted_list[1][5] == "Deletion" or sorted_list[1][5] == "Insertion"):
-                if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys() and (sorted_list[1][5] == "SNV" or sorted_list[1][5] == "SNP"):
+                if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys() and (sorted_list[1][5] == "DIP" or sorted_list[1][5] == "Deletion" or sorted_list[1][5] == "Insertion"):
+                #if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys() and (sorted_list[1][5] == "SNV" or sorted_list[1][5] == "SNP"):
                     clusters[(sorted_list[1][6], sorted_list[1][1], sorted_list[1][0])] = [sorted_list[1]]
                     
             else:#elif (int(sorted_list[1][0]) != int((sorted_list[ 0][0]))):
@@ -3263,13 +3263,13 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                     else:
                         end_position = GetHomopolymerLength(new_list2[0][5], int(new_list2[0][7]), int(new_list2[0][0]), int(len(new_list2[0][5])/2) + 1)[1][1] 
                 if int(sorted_list[1][0]) <= (end_position + 10) and sorted_list[0][1] == sorted_list[1][1]:
-                    #if (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
-                    if (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP") and 0 in new_list2.keys():
+                    if (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
+                    #if (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP") and 0 in new_list2.keys():
                         if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys():
                             
                             clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][0])] = [sorted_list[0]]
-                    #if (sorted_list[1][5] == "DIP" or sorted_list[1][5] == "Deletion" or sorted_list[1][5] == "Insertion"):
-                    if (sorted_list[1][5] == "SNV" or sorted_list[1][5] == "SNP") and 1 in new_list2.keys():
+                    if (sorted_list[1][5] == "DIP" or sorted_list[1][5] == "Deletion" or sorted_list[1][5] == "Insertion"):
+                    #if (sorted_list[1][5] == "SNV" or sorted_list[1][5] == "SNP") and 1 in new_list2.keys():
                         if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys():
                             clusters[(sorted_list[1][6], sorted_list[1][1], sorted_list[1][0])] = [sorted_list[1]]
                 if ('-' not in sorted_list[1][3] and sorted_list[0][5] == "DIP") or sorted_list[1][5] == "Insertion":
@@ -3285,22 +3285,22 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                     else:
                         start_position = GetHomopolymerLength(new_list2[1][5], int(new_list2[1][7]), int(new_list2[1][0]), int(len(new_list2[1][5])/2) + 1)[1][0] 
                 if start_position <= (int(sorted_list[0][0]) + 10) and sorted_list[0][1] == sorted_list[1][1] :
-                    #if (sorted_list[1][5] == "DIP" or sorted_list[1][5] == "Deletion" or sorted_list[1][5] == "Insertion"):
-                    if (sorted_list[1][5] == "SNV" or sorted_list[1][5] == "SNP"):
+                    if (sorted_list[1][5] == "DIP" or sorted_list[1][5] == "Deletion" or sorted_list[1][5] == "Insertion"):
+                    #if (sorted_list[1][5] == "SNV" or sorted_list[1][5] == "SNP"):
                         if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys():
                             clusters[(sorted_list[1][6], sorted_list[1][1], sorted_list[1][0])] = [sorted_list[1]]
-                    #if (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
-                    if (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP"):
+                    if (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
+                    #if (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP"):
                         if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys():
                             clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][0])] = [sorted_list[0]]
             
             if sorted_list[len (sorted_list) - 2][1] == sorted_list[len (sorted_list) - 1][1] and (int(sorted_list[len (sorted_list) - 1][0]) <= int((sorted_list[ len (sorted_list) - 2][0])) + 10):#and (int(sorted_list[len (sorted_list) - 1][0]) != int((sorted_list[ len (sorted_list) - 2][0]))):
-                #if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 1][5] == "DIP" or sorted_list[len(sorted_list) - 1][5] == "Deletion" or sorted_list[len(sorted_list) - 1][5] == "Insertion"):
-                if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 1][5] == "SNV" or sorted_list[len(sorted_list) - 1][5] == "SNP"):    
+                if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 1][5] == "DIP" or sorted_list[len(sorted_list) - 1][5] == "Deletion" or sorted_list[len(sorted_list) - 1][5] == "Insertion"):
+                #if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 1][5] == "SNV" or sorted_list[len(sorted_list) - 1][5] == "SNP"):    
                     clusters[(sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0])] = [sorted_list[len(sorted_list) - 1]]
                    
-                #if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 2][5] == "DIP" or sorted_list[len(sorted_list) - 2][5] == "Deletion" or sorted_list[len(sorted_list) - 2][5] == "Insertion"):
-                if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 2][5] == "SNV" or sorted_list[len(sorted_list) - 2][5] == "SNP"): 
+                if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 2][5] == "DIP" or sorted_list[len(sorted_list) - 2][5] == "Deletion" or sorted_list[len(sorted_list) - 2][5] == "Insertion"):
+                #if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][0]) not in clusters.keys() and (sorted_list[len(sorted_list) - 2][5] == "SNV" or sorted_list[len(sorted_list) - 2][5] == "SNP"): 
                     clusters[(sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][0])] = [sorted_list[len(sorted_list) - 2]]
                    
             elif (int(sorted_list[len (sorted_list) - 1][0]) != int((sorted_list[ len (sorted_list) - 2][0]))):#if strand[0] == '+':
@@ -3317,12 +3317,12 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                     else:
                         end_position = GetHomopolymerLength(new_list2[len(sorted_list) - 2][5], int(new_list2[len(sorted_list) - 2][7]), int(new_list2[len(sorted_list) - 2][0]), int(len(new_list2[len(sorted_list) - 2][5])/2) + 1)[1][1] 
                 if int(sorted_list[len(sorted_list) - 1][0]) <= (end_position + 10) and sorted_list[len(sorted_list) - 1][1] == sorted_list[len(sorted_list) - 2][1]:
-                    #if (sorted_list[len(sorted_list) - 2][5] == "DIP" or sorted_list[len(sorted_list) - 2][5] == "Deletion" or sorted_list[len(sorted_list) - 2][5] == "Insertion"):
-                    if (sorted_list[len(sorted_list) - 2][5] == "SNV" or sorted_list[len(sorted_list) - 2][5] == "SNP"):
+                    if (sorted_list[len(sorted_list) - 2][5] == "DIP" or sorted_list[len(sorted_list) - 2][5] == "Deletion" or sorted_list[len(sorted_list) - 2][5] == "Insertion"):
+                    #if (sorted_list[len(sorted_list) - 2][5] == "SNV" or sorted_list[len(sorted_list) - 2][5] == "SNP"):
                         if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6]) not in clusters.keys():
                             clusters[(sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6])] = [sorted_list[len(sorted_list) - 2]]
-                    #if (sorted_list[len(sorted_list) - 1][5] == "DIP" or sorted_list[len(sorted_list) - 1][5] == "Deletion" or sorted_list[len(sorted_list) - 1][5] == "Insertion"):  
-                    if (sorted_list[len(sorted_list) - 1][5] == "SNV" or sorted_list[len(sorted_list) - 1][5] == "SNP"): 
+                    if (sorted_list[len(sorted_list) - 1][5] == "DIP" or sorted_list[len(sorted_list) - 1][5] == "Deletion" or sorted_list[len(sorted_list) - 1][5] == "Insertion"):  
+                    #if (sorted_list[len(sorted_list) - 1][5] == "SNV" or sorted_list[len(sorted_list) - 1][5] == "SNP"): 
                         if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6]) not in clusters.keys():
                             clusters[(sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0])] = [sorted_list[len(sorted_list) - 1]]
                 if (sorted_list[len(sorted_list) - 1][5] == "DIP" and '-' not in sorted_list[len(sorted_list) - 1][3]) or sorted_list[len(sorted_list) - 1][5] == "Insertion": 
@@ -3338,20 +3338,20 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                     else:
                         start_position = GetHomopolymerLength(new_list2[len(sorted_list) - 1][5], int(new_list2[len(sorted_list) - 1][7]), int(new_list2[len(sorted_list) - 1][0]), int(len(new_list2[len(sorted_list) - 1][5])/2) + 1)[1][0]
                 if start_position <= int((sorted_list[len(sorted_list) - 2][0] + 10)) and sorted_list[len(sorted_list) - 2][1] == sorted_list[len(sorted_list) - 1][1]:
-                    #if (sorted_list[len(sorted_list) - 1][5] == "DIP" or sorted_list[len(sorted_list) - 1][5] == "Deletion" or sorted_list[len(sorted_list) - 1][5] == "Insertion"):
-                    if (sorted_list[len(sorted_list) - 1][5] == "SNV" or sorted_list[len(sorted_list) - 1][5] == "SNP"):
+                    if (sorted_list[len(sorted_list) - 1][5] == "DIP" or sorted_list[len(sorted_list) - 1][5] == "Deletion" or sorted_list[len(sorted_list) - 1][5] == "Insertion"):
+                    #if (sorted_list[len(sorted_list) - 1][5] == "SNV" or sorted_list[len(sorted_list) - 1][5] == "SNP"):
                         if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0]) not in clusters.keys():
                             clusters[(sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][0])] = [sorted_list[len(sorted_list) - 1]]
-                    #if (sorted_list[len(sorted_list) - 2][5] == "DIP" or sorted_list[len(sorted_list) - 2][5] == "Deletion" or sorted_list[len(sorted_list) - 2][5] == "Insertion"):
-                    if (sorted_list[len(sorted_list) - 2][5] == "SNV" or sorted_list[len(sorted_list) - 2][5] == "SNP"): 
+                    if (sorted_list[len(sorted_list) - 2][5] == "DIP" or sorted_list[len(sorted_list) - 2][5] == "Deletion" or sorted_list[len(sorted_list) - 2][5] == "Insertion"):
+                    #if (sorted_list[len(sorted_list) - 2][5] == "SNV" or sorted_list[len(sorted_list) - 2][5] == "SNP"): 
                         if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][0]) not in clusters.keys():
                             clusters[(sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][0])] = [sorted_list[len(sorted_list) - 2]]
                     
             for j in range (1,len (sorted_list) - 1):
                 #if int(sorted_list[j][0]) != int((sorted_list[j + 1][0])):
                     if (sorted_list[j][1] == sorted_list[j - 1][1] and (int(sorted_list[j][0]) <= int((sorted_list[j - 1][0])) + 10)) or (sorted_list[j + 1][1] == sorted_list[j][1] and (int(sorted_list[j + 1][0]) <= int((sorted_list[j][0])) + 10)): #or ((isolate_list[key][j + n][6], int(isolate_list[key][j + n][0]), isolate_list[key][j + n][1]) in homopolymers.keys() and (int(isolate_list[key][j + n][0]) <= int((isolate_list[key][j + n - 1][0])) + 10 + homopolymers[key])) :  
-                            #if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys() and (sorted_list[j][5] == "DIP" or sorted_list[j][5] == "Deletion" or sorted_list[j][5] == "Insertion"):
-                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys() and (sorted_list[j][5] == "SNV" or sorted_list[j][5] == "SNP"):    
+                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys() and (sorted_list[j][5] == "DIP" or sorted_list[j][5] == "Deletion" or sorted_list[j][5] == "Insertion"):
+                            #if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys() and (sorted_list[j][5] == "SNV" or sorted_list[j][5] == "SNP"):    
                                 #if j == 0 or isolate_list[key][j - n] not in clusters.keys():
                                 clusters[(sorted_list[j][6], sorted_list[j][1], sorted_list[j][0])] = [sorted_list[j]]
                                 #total_clusters = total_clusters + 1
@@ -3369,13 +3369,13 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                             else:
                                 end_position = GetHomopolymerLength(new_list2[j][5], int(new_list2[j][7]), int(new_list2[j][0]), int(len(new_list2[j][5])/2) + 1)[1][1] 
                         if int(sorted_list[j + 1][0]) <= (end_position + 10) and sorted_list[j][1] == sorted_list[j + 1][1]:
-                            #if (sorted_list[j][5] == "DIP"or sorted_list[j][5] == "Deletion" or sorted_list[j][5] == "Insertion"):
-                            if (sorted_list[j][5] == "SNV"or sorted_list[j][5] == "SNP"):
+                            if (sorted_list[j][5] == "DIP"or sorted_list[j][5] == "Deletion" or sorted_list[j][5] == "Insertion"):
+                            #if (sorted_list[j][5] == "SNV"or sorted_list[j][5] == "SNP"):
                                     #if sorted_list[j][4] == '-':
                                 if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys():
                                     clusters[(sorted_list[j][6], sorted_list[j][1], sorted_list[j][0])] = [sorted_list[j]]
-                            #if (sorted_list[j + 1][5] == "DIP"  or sorted_list[j + 1][5] == "Deletion" or sorted_list[j + 1][5] == "Insertion"): 
-                            if (sorted_list[j + 1][5] == "SNV"  or sorted_list[j + 1][5] == "SNP"):
+                            if (sorted_list[j + 1][5] == "DIP"  or sorted_list[j + 1][5] == "Deletion" or sorted_list[j + 1][5] == "Insertion"): 
+                            #if (sorted_list[j + 1][5] == "SNV"  or sorted_list[j + 1][5] == "SNP"):
                                 if (sorted_list[j + 1][6], sorted_list[j + 1][1], sorted_list[j + 1][0]) not in clusters.keys():
                                     clusters[(sorted_list[j + 1][6], sorted_list[j + 1][1], sorted_list[j + 1][0])] = [sorted_list[j + 1]]
                         if (sorted_list[j][5] == "DIP"  and '-' not in sorted_list[j][3])or sorted_list[j][5] == "Insertion":
@@ -3391,12 +3391,12 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                             else:
                                 start_position = GetHomopolymerLength(new_list2[j][5], int(new_list2[j][7]), int(new_list2[j][0]), int(len(new_list2[j][5])/2) + 1)[1][0] 
                         if start_position <= int((sorted_list[j - 1][0] + 10)) and sorted_list[j - 1][1] == sorted_list[j][1]:
-                            #if (sorted_list[j][5] == "DIP" or sorted_list[j][5] == "Deletion" or sorted_list[j][5] == "Insertion"): 
-                            if (sorted_list[j][5] == "SNV" or sorted_list[j][5] == "SNP"): 
+                            if (sorted_list[j][5] == "DIP" or sorted_list[j][5] == "Deletion" or sorted_list[j][5] == "Insertion"): 
+                            #if (sorted_list[j][5] == "SNV" or sorted_list[j][5] == "SNP"): 
                                 if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys():
                                     clusters[(sorted_list[j][6], sorted_list[j][1], sorted_list[j][0])] = [sorted_list[j]]  #indel_clusters = indel_clusters + 1
-                            #if (sorted_list[j - 1][5] == "DIP" or sorted_list[j - 1][5] == "Deletion" or sorted_list[j - 1][5] == "Insertion"): 
-                            if (sorted_list[j - 1][5] == "SNV" or sorted_list[j - 1][5] == "SNP"):    
+                            if (sorted_list[j - 1][5] == "DIP" or sorted_list[j - 1][5] == "Deletion" or sorted_list[j - 1][5] == "Insertion"): 
+                            #if (sorted_list[j - 1][5] == "SNV" or sorted_list[j - 1][5] == "SNP"):    
                                 if (sorted_list[j - 1][6], sorted_list[j - 1][1], sorted_list[j - 1][0]) not in clusters.keys():
                                     clusters[(sorted_list[j - 1][6], sorted_list[j - 1][1], sorted_list[j - 1][0])] = [sorted_list[j - 1]]
                                 #elif isolate_list[key][j] not in clusters.keys():
@@ -3404,8 +3404,8 @@ def FindClusters( isolate_list, list2, strain, homopolymers): #Find indels that 
                     
                         
             for k in range(0, len(sorted_list)):
-                #if (sorted_list[k][5] == "DIP" or sorted_list[k][5] == "Deletion" or sorted_list[k][5] == "Insertion"):
-                if (sorted_list[k][5] == "SNV" or sorted_list[k][5] == "SNP"):
+                if (sorted_list[k][5] == "DIP" or sorted_list[k][5] == "Deletion" or sorted_list[k][5] == "Insertion"):
+                #if (sorted_list[k][5] == "SNV" or sorted_list[k][5] == "SNP"):
                     if (sorted_list[k][6], sorted_list[k][1], sorted_list[k][0]) not in clusters.keys() and (sorted_list[k][6], sorted_list[k][1], sorted_list[k][0]) not in nonclusters.keys():
                         nonclusters[(sorted_list[k][6], sorted_list[k][1], sorted_list[k][0])] = [sorted_list[k]]
 
@@ -3488,34 +3488,34 @@ chromosome_sequences['chrXIV'] = sequence14
 chromosome_sequences['chrXV'] = sequence15
 chromosome_sequences['chrXVI'] = sequence16
     
-a1 = open('WT_sub_clusters.bed', 'w+')
+a1 = open('WT_indel_clustersv2.bed', 'w+')
 a2 = open('WT_indel_sequences', 'w+')
-a3 = open('WT_sub_nonclusters.bed', 'w+')
+a3 = open('WT_indel_nonclusters.bed', 'w+')
 a4 = open('WT_indel_sequences2', 'w+')
-b1 = open('rad16_sub_clusters.bed', 'w+')
+b1 = open('rad16_indel_clustersv2.bed', 'w+')
 b2 = open('rad16_indel_sequences', 'w+')
-b3 = open('rad16_sub_nonclusters.bed', 'w+')
+b3 = open('rad16_indel_nonclusters.bed', 'w+')
 b4 = open('rad16_indel_sequences2', 'w+')
-c1 = open('rad26_sub_clusters.bed', 'w+')
+c1 = open('rad26_indel_clustersv2.bed', 'w+')
 c2 = open('rad26_indel_sequences', 'w+')
-c3 = open('rad26_sub_nonclusters.bed', 'w+')
+c3 = open('rad26_indel_nonclusters.bed', 'w+')
 c4 = open('rad26_indel_sequences2', 'w+')
 d1 = open('rad30_indel_clusters.bed', 'w+')
 d2 = open('rad30_indel_sequences', 'w+')
 d3 = open('rad30_indel_nonclusters.bed', 'w+')
 d4 = open('rad30_indel_sequences2', 'w+')
 
-e1 = open('WT_sub_clustersUVB.bed', 'w+')
+e1 = open('WT_indel_clustersUVB.bed', 'w+')
 e2 = open('WT_indel_sequencesUVB', 'w+')
-e3 = open('WT_sub_nonclustersUVB.bed', 'w+')
+e3 = open('WT_indel_nonclustersUVB.bed', 'w+')
 e4 = open('WT_indel_sequencesUVB2', 'w+')
-f1 = open('rad16_sub_clustersUVB.bed', 'w+')
+f1 = open('rad16_indel_clustersUVB.bed', 'w+')
 f2 = open('rad16_indel_sequencesUVB', 'w+')
-f3 = open('rad16_sub_nonclustersUVB.bed', 'w+')
+f3 = open('rad16_indel_nonclustersUVB.bed', 'w+')
 f4 = open('rad16_indel_sequencesUVB2', 'w+')
-g1 = open('rad26_sub_clustersUVB.bed', 'w+')
+g1 = open('rad26_indel_clustersUVB.bed', 'w+')
 g2 = open('rad26_indel_sequencesUVB', 'w+')
-g3 = open('rad26_sub_nonclustersUVB.bed', 'w+')
+g3 = open('rad26_indel_nonclustersUVB.bed', 'w+')
 g4 = open('rad26_indel_sequencesUVB2', 'w+')
 h1 = open('rad30_indel_clustersUVB.bed', 'w+')
 h2 = open('rad30_indel_sequencesUVB', 'w+')
@@ -3527,12 +3527,12 @@ h4 = open('rad30_indel_sequencesUVB2', 'w+')
 def MakeClusterFiles(clusters, nonclusters, file1, file2, file3, file4):
     cluster_keys = sorted(clusters.keys(), key = index2)
     sorted_list = sorted(cluster_keys, key = index)
+    for c in clusters:
+        file1.write(clusters[c][0][1] + '\t' + str((clusters[c][0][0] - 1)) + '\t' + str(clusters[c][0][0]) + '\t' + clusters[c][0][2] + '\t' + clusters[c][0][3] + '\t' + clusters[c][0][4])
+        file1.write('\n')
     file2.write("Deletions: ")
     file2.write('\n')
     for c in sorted_list:
-        #if '-' in clusters[c][0][3] and len(clusters[c][0][7]) == 1:
-        file1.write(clusters[c][0][1] + '\t' + str((clusters[c][0][0] - 1)) + '\t' + str(clusters[c][0][0]) + '\t' + clusters[c][0][2] + '\t' + clusters[c][0][3] + '\t' + clusters[c][0][4])
-        file1.write('\n')
         for key in chromosome_sequences.keys():
             if clusters[c][0][1] == key:
                 sequence = chromosome_sequences[key]
@@ -3566,22 +3566,23 @@ def MakeClusterFiles(clusters, nonclusters, file1, file2, file3, file4):
                 else:
                      while len(seq) < 21:
                             seq = seq + 'N'
-                file2.write('\n')
+                #file2.write('\n')
                 if '-' not in clusters[c][0][3]:
 
                     if clusters[c][0][4] == '-' and len(clusters[c][0][3]) == 1:
                         file2.write(GetReverseComplement(seq[::-1]))
                     elif len(clusters[c][0][3]) == 1:
                         file2.write(seq)
-                        file2.write('\n')
+                    file2.write('\n')
     noncluster_keys = sorted(nonclusters.keys(), key = index2)
     sorted_list2 = sorted(noncluster_keys, key = index)
+    for d in nonclusters:
+        file3.write(nonclusters[d][0][1] + '\t' + str((nonclusters[d][0][0] - 1)) + '\t' + str(nonclusters[d][0][0]) + '\t' + nonclusters[d][0][2] + '\t' + nonclusters[d][0][3] + '\t' + nonclusters[d][0][4])
+        file3.write('\n')
     file4.write('Deletions: ')
     file4.write('\n')
-    for d in sorted_list2:
-        if '-' in nonclusters[d][0][3] and len(nonclusters[d][0][7]) == 1:
-            file3.write(nonclusters[d][0][1] + '\t' + str((nonclusters[d][0][0] - 1)) + '\t' + str(nonclusters[d][0][0]) + '\t' + nonclusters[d][0][2] + '\t' + nonclusters[d][0][3] + '\t' + nonclusters[d][0][4])
-            file3.write('\n')
+
+    for d in sorted_list2:        
         for key in chromosome_sequences.keys():
             if nonclusters[d][0][1] == key:
                 sequence = chromosome_sequences[key]
@@ -3668,7 +3669,6 @@ h1.close()
 h2.close()
 h3.close()
 h4.close()
-
 
 
 
