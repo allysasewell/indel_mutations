@@ -2570,9 +2570,46 @@ def FindClusters( isolate_list, homopolymers):
     
     return clusters
 
-FindClusters(WT_isolate_list, WT_homopolymers)
-FindClusters(rad16_isolate_list, rad16_homopolymers)
-FindClusters(rad26_isolate_list, rad26_homopolymers)
-FindClusters(WT_isolate_listB, WT_homopolymersB)
-FindClusters(rad16_isolate_listB, rad16_homopolymersB)
-FindClusters(rad26_isolate_listB, rad26_homopolymersB)
+clusters = FindClusters(WT_isolate_list, WT_homopolymers)
+clusters16 = FindClusters(rad16_isolate_list, rad16_homopolymers)
+clusters26 = FindClusters(rad26_isolate_list, rad26_homopolymers)
+clustersB = FindClusters(WT_isolate_listB, WT_homopolymersB)
+clusters16B = FindClusters(rad16_isolate_listB, rad16_homopolymersB)
+clusters26B = FindClusters(rad26_isolate_listB, rad26_homopolymersB)
+
+
+a = open('WT_sub_clustersv2.bed', 'w+')
+b = open('rad16_sub_clustersv2.bed', 'w+')
+d = open('rad26_sub_clustersv2.bed', 'w+')
+
+
+e = open('WT_sub_clustersUVB.bed', 'w+')
+f = open('rad16_sub_clustersUVB.bed', 'w+')
+g = open('rad26_sub_clustersUVB.bed', 'w+')
+
+
+def index2(tuple):
+    return tuple[2]
+
+def MakeClusterFiles(clusters, file1):
+    for c in clusters:
+        file1.write(clusters[c][0][1] + '\t' + str((clusters[c][0][0] - 1)) + '\t' + str(clusters[c][0][0]) + '\t' + clusters[c][0][2] + '\t' + clusters[c][0][3] + '\t' + clusters[c][0][4])
+        file1.write('\n')
+    
+
+                
+MakeClusterFiles(clusters,  a)
+MakeClusterFiles(clusters16, b)
+MakeClusterFiles(clusters26, d)
+MakeClusterFiles(clustersB, e)
+MakeClusterFiles(clusters16B, f)
+MakeClusterFiles(clusters26B, g)
+
+
+a.close()
+b.close()
+d.close()
+e.close()
+f.close()
+g.close()
+
