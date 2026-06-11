@@ -78,16 +78,15 @@ sequences.append(sequence16)
 
 
 
-#Returns the start and end positions and the length of the homopolymer containing a base substitution
+#Returns the start and end positions and the length of the homopolymer containing a deleted base
 def GetHomopolymerLength(sequence, mut_pos1, mut_pos, mut_position):
     #mut_position = int(len(sequence)/2) + 1
-    mut_pos1 = int(mut_pos1)
-    mut_pos = int(mut_pos) 
+    mut_pos1 = int(mut_pos1) #0 base position
+    mut_pos = int(mut_pos) #1 base position
     difference = mut_pos - mut_pos1 - 1
     mut_position2 = mut_position + difference
-    print(sequence[mut_position - 1])
-    
-    if difference > 1:
+    if difference > 0:
+        print(difference)
         print(sequence[mut_position - 1:mut_position2])
     end_position = -1
     lengths = {}
@@ -110,6 +109,43 @@ def GetHomopolymerLength(sequence, mut_pos1, mut_pos, mut_position):
         if mut_position <= end_position  and mut_position >= end_position - (length - 1 ) or mut_position2 <= end_position  and mut_position2 >= end_position - (length - 1 ):
     
             lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position) )] = length
+           
+    if len(lengths) == 0:
+        return 1, (mut_pos, mut_pos)
+    for key in lengths:
+        if lengths[key] == max(lengths.values()):
+            return lengths[key], key
+
+
+#Returns the start and end positions and the length of the homopolymer containing a inserted base
+def GetHomopolymerLengthIns(sequence, mut_pos1, mut_pos, mut_position, strand):
+    #mut_position = int(len(sequence)/2) + 1
+    mut_position = mut_position 
+    mut_pos1 = int(mut_pos1) #0 base position
+    mut_pos = int(mut_pos) #1 base position 
+    end_position = -1
+    lengths = {}
+    for i in range(0, len(sequence)):
+        flag = True
+        length = 1
+        n = 0
+        while flag == True and (i + n + 1) < len(sequence):
+            if sequence[i + n] == sequence[i + n + 1]:
+                end_position = i + n + 2
+                length = length + 1 
+                n = n + 1
+            else:
+                flag = False
+             
+                if mut_position <= end_position + 1   and (mut_position) >= end_position - (length - 1):
+                        lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
+              
+    
+       
+            if mut_position <= end_position + 1   and mut_position >= end_position - (length - 1):
+                lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
+         
+    
            
     if len(lengths) == 0:
         return 1, (mut_pos, mut_pos)
@@ -412,6 +448,12 @@ for i1 in range(0, len(isolate)):
     else:
         isolate_list[(isolate[i1], genotype[i1])] .append((position2[i1], 'chr' + str(chromosome[i1]), trinucleotide[i1], mutation[i1], strand[i1], mutation_type[i1], isolate[i1]))
     
+
+
+
+
+
+
 def getStrforInt(string):
     new_str = ""
     for s in string:
@@ -652,14 +694,14 @@ for i1 in range(0, len(isolates2)):
     else:
         isolate_list2[(isolates2[i1], genotype2[i1])] .append((position2_2[i1], 'chr' + str(chromosome2[i1]), trinucleotide2[i1], mutation2[i1], strand2[i1], mutation_type_2[i1], isolates2[i1]))
 
-f1a = open("WT_substitutions_sorted_tandem.bed", 'w+')
-f1b = open("rad16_substitutions_sorted_tandem.bed", 'w+')
-f1c = open("rad26_substitutions_sorted_tandem.bed", 'w+')
-f1d = open("rad30_substitutions_sorted_tandem.bed", 'w+')
-#f1a  = open("WT_mutations_sorted_tandem.bed", 'w+')
-#f1b = open("rad16_mutations_sorted_tandem.bed", 'w+')
-#f1c = open("rad26_mutations_sorted_tandem.bed", 'w+')
-#f1d = open("rad30_mutations_sorted_tandem.bed", 'w+')
+#f1a = open("WT_substitutions_sorted_tandem.bed", 'w+')
+#f1b = open("rad16_substitutions_sorted_tandem.bed", 'w+')
+#f1c = open("rad26_substitutions_sorted_tandem.bed", 'w+')
+#f1d = open("rad30_substitutions_sorted_tandem.bed", 'w+')
+f1a  = open("WT_mutations_sorted_tandem.bed", 'w+')
+f1b = open("rad16_mutations_sorted_tandem.bed", 'w+')
+f1c = open("rad26_mutations_sorted_tandem.bed", 'w+')
+f1d = open("rad30_mutations_sorted_tandem.bed", 'w+')
 
 f1ua  = open("WT_UVB_mutations_sorted_tandem.bed", 'w+')
 f1ub = open("rad16_UVB_mutations_sorted_tandem.bed", 'w+')
@@ -673,7 +715,7 @@ def WriteChr(chr_name, file1a, file1b, file1c, file1d, chromosome, position1, po
     chromosome1_dict = {}
     chromosome1 =[]
     for x in range(0, len(mutation_type)):
-        if mutation_type[x] == 'SNV' or mutation_type[x] == 'SNP':
+        #if mutation_type[x] == 'SNV' or mutation_type[x] == 'SNP':
                 if trinucleotide[x].isalpha():# len(trinucleotide[x]) == 3 and trinucleotide[x].isalpha():
                     if chromosome[x] == chr_name: 
                         chromosome1_dict[int(position1[x]), isolate[x]] = x
@@ -685,33 +727,33 @@ def WriteChr(chr_name, file1a, file1b, file1c, file1d, chromosome, position1, po
     sorted_chromosome1= sorted(chromosome1)
     #sorted_chromosome1.sort()
     for y in range(0, len(sorted_chromosome1)):
-        file_data.append(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position1[chromosome1_dict[sorted_chromosome1[y]]])) + '\t' + str(position2[chromosome1_dict[sorted_chromosome1[y]]]) + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + strand[chromosome1_dict[sorted_chromosome1[y]]] + '\t' )
+        file_data.append(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position1[chromosome1_dict[sorted_chromosome1[y]]])) + '\t' + str(position2[chromosome1_dict[sorted_chromosome1[y]]]) + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + strand[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + allele[chromosome1_dict[sorted_chromosome1[y]]] + '\t' )
         #print(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position1[chromosome1_dict[sorted_chromosome1[y]]]) - 1) + '\t' + position2[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]])
     for fd in range(0, len(file_data)):
         
             if genotype[chromosome1_dict[sorted_chromosome1[fd]]] == 'WT':
                 file1a.write(file_data[fd])
                
-                file1a.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]])
+                file1a.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[fd]]])
                 file1a.write('\n')
                 
             if 'rad16' in genotype[chromosome1_dict[sorted_chromosome1[fd]]] or 'Rad16' in  genotype[chromosome1_dict[sorted_chromosome1[fd]]]:
                 file1b.write(file_data[fd])
                 
-                file1b.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]])
+                file1b.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[fd]]])
                 file1b.write('\n')
               
             if 'rad26' in genotype[chromosome1_dict[sorted_chromosome1[fd]]] or 'Rad26' in genotype[chromosome1_dict[sorted_chromosome1[fd]]]:
     
                 file1c.write(file_data[fd])
                
-                file1c.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]])
+                file1c.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[fd]]])
                 file1c.write('\n')
               
             if 'rad30' in genotype[chromosome1_dict[sorted_chromosome1[fd]]] or 'Rad30' in  genotype[chromosome1_dict[sorted_chromosome1[fd]]]:
                 file1d.write(file_data[fd])
               
-                file1d.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]])
+                file1d.write(isolate[chromosome1_dict[sorted_chromosome1[fd]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[fd]]])
                 file1d.write('\n')
                
 
@@ -800,8 +842,7 @@ f1ud.close()
 #f11c.close()
 #f11d.close()
 
-#Finds the 27 bases on either side of a mutation and the length of the homopolymer containing the mutation
-def MakeMultiNucFile(file_1, file_2, file_3):
+def MakeMultiNucFile(file_1, file_2):  #Finds the 27 bases on either side of a mutation and the length of the homopolymer containing the mutation
     new_data = file_1.read()
     new_chromosome = []
     new_position = []
@@ -811,7 +852,7 @@ def MakeMultiNucFile(file_1, file_2, file_3):
     new_trinucleotide = []
     new_strand = []
     new_isolate = []
-    #new_isolate = []
+    new_mutation_type = []
     lengths = []
     new_lines = [s.strip().split() for s in new_data.splitlines()]
     for line in new_lines:
@@ -819,13 +860,13 @@ def MakeMultiNucFile(file_1, file_2, file_3):
         new_position1.append(int(line[1]))
         new_position.append(int(line[2]))
         new_mutation.append(line[4])
-        new_allele.append(line[3][1])
+        new_allele.append(line[6])
         new_trinucleotide.append(line[3])
         new_strand.append(line[5])
-        if len(line) > 6:
-            new_isolate.append(line[6])
+        new_isolate.append(line[7])
+        new_mutation_type.append(line[8])
 
-    #Add two more nucleotides after the 3' base
+    #Add more nucleotides with the indel in the middle
     multinucleotide = []
     for pos in range(0, len(new_position)):
         if new_chromosome[pos] == 'chrI':
@@ -836,8 +877,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]: #Insertion
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+' #Insertions in C and T homopolymers are assumed to be on the '+' strand
+                        else:
+                            new_strand[pos] = '-'
+                else: #Deletion
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:   #Indels near telomeres 
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -846,8 +897,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:  #Indels near telomeres
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -856,17 +917,37 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
         elif new_chromosome[pos] == 'chrII':
             sequence = GetSequence('chr2.txt')
-            #if strand[pos] == '+':
+            
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
                 if new_strand[pos] == '+':
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -875,8 +956,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -885,7 +977,17 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                    
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
         elif new_chromosome[pos] == 'chrIII':
             sequence = GetSequence('chr3.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -893,8 +995,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -903,8 +1016,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -913,8 +1037,17 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
-           
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+            
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
             
 
 
@@ -925,8 +1058,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                       
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -935,8 +1079,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -945,7 +1100,17 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
         elif new_chromosome[pos] == 'chrV':
             sequence = GetSequence('chr5.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -953,8 +1118,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -963,8 +1139,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -973,7 +1160,17 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
         elif new_chromosome[pos] == 'chrVI':
             sequence = GetSequence('chr6.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -981,8 +1178,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -991,8 +1199,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1001,7 +1220,17 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
         elif new_chromosome[pos] == 'chrVII':
             sequence = GetSequence('chr7.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1009,8 +1238,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1019,8 +1259,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1029,7 +1280,17 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
         elif new_chromosome[pos] == 'chrVIII':
             sequence = GetSequence('chr8.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1037,8 +1298,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1047,8 +1319,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                       
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1057,7 +1340,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                       
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrIX':
             sequence = GetSequence('chr9.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1065,8 +1359,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1075,8 +1380,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1085,7 +1401,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrX':
             sequence = GetSequence('chr10.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1093,8 +1420,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1103,8 +1441,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                    
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1113,7 +1462,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrXI':
             sequence = GetSequence('chr11.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1121,8 +1481,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1131,8 +1502,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1141,7 +1523,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrXII':
             sequence = GetSequence('chr12.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1149,8 +1542,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1159,8 +1563,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1169,7 +1584,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrXIII':
             sequence = GetSequence('chr13.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1177,8 +1603,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1187,7 +1624,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
             else:#elif int(new_position[pos]) >= len(sequence) -26:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
@@ -1197,7 +1645,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrXIV':
             sequence = GetSequence('chr14.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1205,8 +1664,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1215,7 +1685,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
             else:#elif int(new_position[pos]) >= len(sequence) -26:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
@@ -1225,7 +1706,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrXV':
             sequence = GetSequence('chr15.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1233,8 +1725,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1243,8 +1746,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
-            else:#elif int(new_position[pos]) >= len(sequence) -26:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                       
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            else:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1253,7 +1767,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+            
         elif new_chromosome[pos] == 'chrXVI':
             sequence = GetSequence('chr16.txt')
             if int(new_position[pos]) > 27 and int(new_position[pos]) < len(sequence) -26:
@@ -1261,8 +1786,19 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])
                 else:
                     multinucleotide.append(GetReverseComplement(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27]))
-                lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
-            elif int(new_position[pos]) <= 27:
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[0])
+                    if lengths[len(lengths) - 1] >= 4:
+                        h_coord = GetHomopolymerLengthIns(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1, new_strand[pos])[1]
+                       
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27], int(new_position1[pos]), int(new_position[pos]), int(len(sequence[int(new_position[pos]) - 28: int(new_position[pos]) + 27])/2) + 1)[0])
+                    
+            elif int(new_position[pos]) <= 27:    
                 multinucleotide_seq = ""
                 for i in range(0, 27- int(new_position[pos]) + 1):
                     multinucleotide_seq = multinucleotide_seq + '*'
@@ -1271,7 +1807,18 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                         multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0] )
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+        
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
             else:#elif int(new_position[pos]) >= len(sequence) -26:
                 multinucleotide_seq = sequence[int(new_position[pos]) - 28: len(sequence)]
                 for i in range(0, 27 - (len(sequence) - int(new_position[pos]))):
@@ -1281,30 +1828,38 @@ def MakeMultiNucFile(file_1, file_2, file_3):
                     multinucleotide.append(multinucleotide_seq)
                 else:
                      multinucleotide.append(GetReverseComplement(multinucleotide_seq))
-                lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
+                if '-' in new_allele[pos]:
+                    lengths.append(GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[0])
+                    h_coord = GetHomopolymerLengthIns(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1, new_strand[pos])[1]
+                    if lengths[len(lengths) - 1] >= 4:
+                        
+                        if 'T' in sequence[h_coord[0] - 1: h_coord[1]] or 'C' in sequence[h_coord[0] - 1: h_coord[1]]:
+                            new_strand[pos] == '+'
+                        else:
+                            new_strand[pos] = '-'
+                else:
+                    lengths.append(GetHomopolymerLength(multinucleotide_seq, int(new_position1[pos]), int(new_position[pos]), int(len(multinucleotide_seq)/2) + 1)[0])
             
             
     
     for i in range(0, len(new_position)):
-        #if new_strand[i] == '-':
-            #file_2.write(new_chromosome[i] + '\t' + str(int(new_position[i]) - 1) + '\t'  +str(new_position[i]) + '\t' + new_trinucleotide[i] + '\t' + new_mutation[i] + '\t' + new_strand[i]  + '\t'+ GetReverseComplement(pentanucleotide[i]) + '\t' +str(GetHomopolymerLength(GetReverseComplement(pentanucleotide[i]), new_position1[i], new_position[i], int(len(pentanucleotide[i])/2) + 1)[0]))
-            #file_2.write('\n')
-        #if new_strand[i] == '+':
-            file_2.write(new_chromosome[i] + '\t' + str(int(new_position[i]) - 1)  + '\t' + str(new_position[i]) + '\t' + new_trinucleotide[i] + '\t' +  new_mutation[i] + '\t' + new_strand[i] + '\t' + multinucleotide[i] + '\t' + str(GetHomopolymerLength(multinucleotide[i], new_position1[i], new_position[i], int(len(multinucleotide[i])/2) + 1)[0]) + '\t' + isolate[i])
-            file_2.write('\n')
-    for j in range(0, len(multinucleotide)):
-        if new_strand[j] == '-':
-            file_3.write(GetComplement(GetReverseComplement(multinucleotide[j])))
-            file_3.write('\n')
-        else:
-            file_3.write(multinucleotide[j])
-            file_3.write('\n')
-        
+        #if int(lengths) >= 4:
+        #if int(lengths[i]) >= 4 and new_allele[i] == '-' and len(new_mutation[i]) == 1:
+        #if int(lengths[i]) < 4 and new_allele[i] == '-' and len(new_mutation[i]) == 1:
+        #if len(new_allele[i]) == 1:
+            if new_strand[i] == '-':
+                file_2.write(new_chromosome[i] + '\t' + str(int(new_position[i]) - 1) + '\t'  +str(new_position[i]) + '\t' + new_trinucleotide[i] + '\t' + new_mutation[i] + '\t' + new_strand[i]  + '\t'+ multinucleotide[i] + '\t' + str(lengths[i]) + '\t' + new_isolate[i])
+                file_2.write('\n')
+            if new_strand[i] == '+':
+                file_2.write(new_chromosome[i] + '\t' + str(int(new_position[i]) - 1)  + '\t' + str(new_position[i]) + '\t' + new_trinucleotide[i] + '\t' +  new_mutation[i] + '\t' + new_strand[i] + '\t' + multinucleotide[i] + '\t' + str(lengths[i]) + '\t' + new_isolate[i])
+                file_2.write('\n')
 
-    return multinucleotide, new_strand, new_chromosome, new_position,  new_trinucleotide, new_mutation, new_allele, lengths, new_position1, new_isolate
+    
+    
+    return multinucleotide, new_strand, new_chromosome, new_position, new_trinucleotide, new_mutation, new_allele, lengths, new_position1, new_isolate, new_mutation_type
 
 #Counts the number of mutations in homopolymers of different lengths
-def GetPolymerCounts(pentanucleotide,  new_chromosome, new_position, new_trinucleotide, new_mutation, new_allele, lengths, new_isolate):
+def GetPolymerCounts(pentanucleotide,  new_chromosome, new_position, new_trinucleotide, new_mutation, new_allele, lengths, new_isolate, new_mutation_type):
     homopolymers = {}
     homopolymer_list = {}
     polymer_counts = []
@@ -1320,7 +1875,7 @@ def GetPolymerCounts(pentanucleotide,  new_chromosome, new_position, new_trinucl
             #elif strand[i] == '-':
                 #key = GetHomopolymerLength(GetReversComplement(sequence), )[1]
             
-            if key >= 4:
+            if key >= 4 and (new_mutation_type[i] == 'SNP' or new_mutation_type[i] == 'SNV'):
                 homopolymer_number = homopolymer_number + 1
                 homopolymers[(new_isolate[i], new_chromosome[i], new_position[i])] = key
                 #homopolymer_list[key[1]] = [(new_chromosome[i], key[0][0], key[0][1])]
@@ -1328,13 +1883,13 @@ def GetPolymerCounts(pentanucleotide,  new_chromosome, new_position, new_trinucl
             print(pentanucleotide[i])
             print(key)
 
-            if new_allele[i] == 'C' or new_allele[i] == 'G':
+            if new_allele[i] == 'C' or new_allele[i] == 'G' and (new_mutation_type[i] == 'SNP' or new_mutation_type[i] == 'SNV'):
 
                 if key in polymer_counts[0].keys():
                     polymer_counts[0][key] = polymer_counts[0][key] + 1
                 else:
                     polymer_counts[0][key] = 1
-            if new_allele[i] == 'A' or new_allele[i] == 'T':
+            if new_allele[i] == 'A' or new_allele[i] == 'T' and (new_mutation_type[i] == 'SNP' or new_mutation_type[i] == 'SNV'):
 
                 if key in polymer_counts[1].keys():
                     polymer_counts[1][key] = polymer_counts[1][key] + 1
@@ -1344,20 +1899,20 @@ def GetPolymerCounts(pentanucleotide,  new_chromosome, new_position, new_trinucl
     return polymer_counts, homopolymers, homopolymer_list
 
 #f2 = open("WT_UV_bothruns_Muts_allSNVs_sorted.bed")
-f2 = open("WT_substitutions_sorted_tandem.bed")
-f2a = open("WT_substitutions_sorted_multinucleotide.bed", 'w+')
+f2 = open("WT_mutations_sorted_tandem.bed")
+f2a = open("WT_mutations_sorted_multinucleotide.bed", 'w+')
 #f2a = open("WT_all_sorted_multinucleotide.bed", 'w+')
 #f3 = open("rad16_UV_bothruns_Muts_allSNVs_sorted.bed")
-f3 = open("rad16_substitutions_sorted_tandem.bed")
-f3a = open("rad16_substitutions_multinucleotide.bed", 'w+')
+f3 = open("rad16_mutations_sorted_tandem.bed")
+f3a = open("rad16_mutations_multinucleotide.bed", 'w+')
 #f3a = open("rad16_all_sorted_multinucleotide.bed", 'w+')
 #f4 = open("rad26_UV_bothruns_Muts_allSNVs_sorted.bed")
-f4 = open("rad26_substitutions_sorted_tandem.bed")
-f4a = open("rad26_substitutions_multinucleotide.bed", 'w+')
+f4 = open("rad26_mutations_sorted_tandem.bed")
+f4a = open("rad26_mutations_multinucleotide.bed", 'w+')
 #f4a = open("rad26_all_multinucleotide.bed", 'w+')
 #f10 = open("rad30_UV_bothruns_Muts_allSNVs_sorted.bed")
 f10a = open("rad30_substitutions_multinucleotide.bed", 'w+')
-f10 = open("rad30_substitutions_sorted_tandem.bed")
+f10 = open("rad30_mutations_sorted_tandem.bed")
 #f10a = open("rad30_all_multinucleotide.bed", 'w+')
 f2b = open('WT_multinucleotide_subs', 'w+')
 f3b = open('rad16_multinucleotide_subs', 'w+')
@@ -1384,7 +1939,7 @@ f12b = open('rad16_UVB_multinucleotide_subs', 'w+')
 f13b = open('rad26_UVB_multinucleotide_subs', 'w+')
 f14b = open('rad30_UVB_multinucleotide_subs', 'w+')
 
-WT_data = MakeMultiNucFile(f2, f2a, f2b)
+WT_data = MakeMultiNucFile(f2, f2a)
 WT_isolate = WT_data[9]
 WT_chromosome = WT_data[2]
 WT_position1 = WT_data[8]
@@ -1394,9 +1949,10 @@ WT_mutation = WT_data[5]
 WT_strand = WT_data[1]
 WT_multinucleotide = WT_data[0] 
 WT_lengths = WT_data[7]
+WT_mutation_type = WT_data[10]
 
 
-rad16_data = MakeMultiNucFile(f3, f3a, f3b)
+rad16_data = MakeMultiNucFile(f3, f3a)
 rad16_isolate = rad16_data[9]
 rad16_chromosome = rad16_data[2]
 rad16_position1 = rad16_data[8]
@@ -1406,8 +1962,9 @@ rad16_mutation = rad16_data[5]
 rad16_strand = rad16_data[1]
 rad16_multinucleotide = rad16_data[0] 
 rad16_lengths = rad16_data[7]
+rad16_mutation_type = rad16_data[10]
 
-rad26_data = MakeMultiNucFile(f4, f4a, f4b)
+rad26_data = MakeMultiNucFile(f4, f4a)
 
 rad26_isolate = rad26_data[9]
 rad26_chromosome = rad26_data[2]
@@ -1419,7 +1976,7 @@ rad26_strand = rad26_data[1]
 rad26_multinucleotide = rad26_data[0] 
 rad26_lengths = rad26_data[7]
 
-rad30_data = MakeMultiNucFile(f10, f10a, f10b)
+rad30_data = MakeMultiNucFile(f10, f10a)
 rad30_isolate = rad30_data[9]
 rad30_chromosome = rad30_data[2]
 rad30_position1 = rad30_data[8]
@@ -1429,9 +1986,10 @@ rad30_mutation = rad30_data[5]
 rad30_strand = rad30_data[1]
 rad30_multinucleotide = rad30_data[0] 
 rad30_lengths = rad30_data[7]
+rad26_mutation_type = rad26_data[10]
 
 
-WT_dataB = MakeMultiNucFile(f11, f11a, f11b)
+WT_dataB = MakeMultiNucFile(f11, f11a)
 WT_isolateB = WT_dataB[9]
 WT_chromosomeB = WT_dataB[2]
 WT_position1B = WT_dataB[8]
@@ -1441,9 +1999,10 @@ WT_mutationB = WT_dataB[5]
 WT_strandB = WT_dataB[1]
 WT_multinucleotideB = WT_dataB[0] 
 WT_lengthsB = WT_dataB[7]
+WT_mutation_typeB = WT_dataB[10]
 
 
-rad16_dataB = MakeMultiNucFile(f12, f12a, f12b)
+rad16_dataB = MakeMultiNucFile(f12, f12a)
 rad16_isolateB = rad16_dataB[9]
 rad16_chromosomeB = rad16_dataB[2]
 rad16_position1B = rad16_dataB[8]
@@ -1453,8 +2012,9 @@ rad16_mutationB = rad16_dataB[5]
 rad16_strandB = rad16_dataB[1]
 rad16_multinucleotideB = rad16_dataB[0] 
 rad16_lengthsB = rad16_dataB[7]
+rad16_mutation_typeB = rad16_dataB[10]
 
-rad26_dataB = MakeMultiNucFile(f13, f13a, f13b)
+rad26_dataB = MakeMultiNucFile(f13, f13a)
 rad26_isolateB = rad26_dataB[9]
 
 rad26_chromosomeB = rad26_dataB[2]
@@ -1465,8 +2025,9 @@ rad26_mutationB = rad26_dataB[5]
 rad26_strandB = rad26_dataB[1]
 rad26_multinucleotideB = rad26_dataB[0] 
 rad26_lengthsB = rad26_dataB[7]
+rad26_mutation_typeB = rad26_dataB[10]
 
-rad30_dataB = MakeMultiNucFile(f14, f14a, f14b)
+rad30_dataB = MakeMultiNucFile(f14, f14a)
 rad30_isolateB = rad30_dataB[9]
 rad30_chromosomeB = rad30_dataB[2]
 rad30_position1B = rad30_dataB[8]
@@ -1479,33 +2040,35 @@ rad30_lengthsB = rad30_dataB[7]
 
 
 
-WT_polymer_counts = GetPolymerCounts(WT_data[0],  WT_data[2], WT_data[3],  WT_data[4], WT_data[5], WT_data[6], WT_data[7], WT_data[9])[0]
+WT_polymer_counts = GetPolymerCounts(WT_data[0],  WT_data[2], WT_data[3],  WT_data[4], WT_data[5], WT_data[6], WT_data[7], WT_data[9], WT_data[10])[0]
 WT_Ccount = WT_polymer_counts[0]
 WT_Tcount = WT_polymer_counts[1]
-rad16_polymer_counts = GetPolymerCounts(rad16_data[0],  rad16_data[2], rad16_data[3], rad16_data[4] , rad16_data[5], rad16_data[6], rad16_data[7], rad16_data[9])[0]
+rad16_polymer_counts = GetPolymerCounts(rad16_data[0],  rad16_data[2], rad16_data[3], rad16_data[4] , rad16_data[5], rad16_data[6], rad16_data[7], rad16_data[9], rad16_data[10])[0]
 rad16_Ccount = rad16_polymer_counts[0]
 rad16_Tcount = rad16_polymer_counts[1]
-WT_homopolymers = GetPolymerCounts(WT_data[0],  WT_data[2], WT_data[3],  WT_data[4], WT_data[5], WT_data[6], WT_data[7], WT_isolate)[1]
-rad16_homopolymers = GetPolymerCounts(rad16_data[0],  rad16_data[2], rad16_data[3],  rad16_data[4], rad16_data[5], rad16_data[6], rad16_data[7], rad16_isolate)[1]
-rad26_polymer_counts = GetPolymerCounts(rad26_data[0],  rad26_data[2], rad26_data[3], rad26_data[4], rad26_data[5], rad26_data[6], rad26_data[7], rad26_isolate)[0]
+WT_homopolymers = GetPolymerCounts(WT_data[0],  WT_data[2], WT_data[3],  WT_data[4], WT_data[5], WT_data[6], WT_data[7], WT_data[9], WT_data[10])[1]
+rad16_homopolymers = GetPolymerCounts(rad16_data[0],  rad16_data[2], rad16_data[3],  rad16_data[4], rad16_data[5], rad16_data[6], rad16_data[7],  rad16_data[9], rad16_data[10])[1]
+rad26_homopolymers = GetPolymerCounts(rad26_data[0],  rad26_data[2], rad26_data[3],  rad26_data[4], rad26_data[5], rad26_data[6], rad26_data[7],  rad26_data[9], rad26_data[10])[1]
+rad26_polymer_counts = GetPolymerCounts(rad26_data[0],  rad26_data[2], rad26_data[3], rad26_data[4], rad26_data[5], rad26_data[6], rad26_data[7],  rad26_data[9], rad26_data[10])[0]
 rad26_Ccount = rad26_polymer_counts[0]
 rad26_Tcount = rad26_polymer_counts[1]
-rad30_polymer_counts = GetPolymerCounts(rad30_data[0],  rad30_data[2], rad30_data[3], rad30_data[4], rad30_data[5], rad30_data[6], rad30_data[7], rad30_isolate)[0]
+rad30_polymer_counts = GetPolymerCounts(rad30_data[0],  rad30_data[2], rad30_data[3], rad30_data[4], rad30_data[5], rad30_data[6], rad30_data[7], rad30_data[9], rad30_data[10])[0]
 rad30_Ccount = rad30_polymer_counts[0]
 rad30_Tcount = rad30_polymer_counts[1]
 
-WT_polymer_countsB = GetPolymerCounts(WT_dataB[0],  WT_dataB[2], WT_dataB[3],  WT_dataB[4], WT_dataB[5], WT_dataB[6], WT_dataB[7], WT_isolateB)[0]
+WT_polymer_countsB = GetPolymerCounts(WT_dataB[0],  WT_dataB[2], WT_dataB[3],  WT_dataB[4], WT_dataB[5], WT_dataB[6], WT_dataB[7], WT_dataB[9], WT_dataB[10])[0]
 WT_CcountB = WT_polymer_countsB[0]
 WT_TcountB = WT_polymer_countsB[1]
-rad16_polymer_countsB = GetPolymerCounts(rad16_dataB[0],  rad16_dataB[2], rad16_dataB[3], rad16_dataB[4] , rad16_dataB[5], rad16_dataB[6], rad16_dataB[7], rad16_isolateB)[0]
+rad16_polymer_countsB = GetPolymerCounts(rad16_dataB[0],  rad16_dataB[2], rad16_dataB[3], rad16_dataB[4] , rad16_dataB[5], rad16_dataB[6], rad16_dataB[7], rad16_dataB[9], rad16_dataB[10])[0]
 rad16_CcountB = rad16_polymer_countsB[0]
 rad16_TcountB = rad16_polymer_countsB[1]
-WT_homopolymersB = GetPolymerCounts(WT_dataB[0],  WT_dataB[2], WT_dataB[3],  WT_dataB[4], WT_dataB[5], WT_dataB[6], WT_dataB[7], WT_isolateB)[1]
-rad16_homopolymersB = GetPolymerCounts(rad16_dataB[0],  rad16_dataB[2], rad16_dataB[3],  rad16_dataB[4], rad16_dataB[5], rad16_dataB[6], rad16_dataB[7], rad16_isolateB)[1]
-rad26_polymer_countsB = GetPolymerCounts(rad26_dataB[0],  rad26_dataB[2], rad26_dataB[3], rad26_dataB[4], rad26_dataB[5], rad26_dataB[6], rad26_dataB[7], rad26_isolateB)[0]
+WT_homopolymersB = GetPolymerCounts(WT_dataB[0],  WT_dataB[2], WT_dataB[3],  WT_dataB[4], WT_dataB[5], WT_dataB[6], WT_dataB[7], WT_dataB[9], WT_dataB[10])[1]
+rad16_homopolymersB = GetPolymerCounts(rad16_dataB[0],  rad16_dataB[2], rad16_dataB[3],  rad16_dataB[4], rad16_dataB[5], rad16_dataB[6], rad16_dataB[7], rad16_dataB[9], rad16_dataB[10])[1]
+rad26_homopolymersB = GetPolymerCounts(rad26_dataB[0],  rad26_dataB[2], rad26_dataB[3],  rad26_dataB[4], rad26_dataB[5], rad26_dataB[6], rad26_dataB[7], rad26_dataB[9], rad26_dataB[10])[1]
+rad26_polymer_countsB = GetPolymerCounts(rad26_dataB[0],  rad26_dataB[2], rad26_dataB[3], rad26_dataB[4], rad26_dataB[5], rad26_dataB[6], rad26_dataB[7], rad26_dataB[9], rad26_dataB[10])[0]
 rad26_CcountB = rad26_polymer_countsB[0]
 rad26_TcountB = rad26_polymer_countsB[1]
-rad30_polymer_countsB = GetPolymerCounts(rad30_dataB[0],  rad30_dataB[2], rad30_dataB[3], rad30_dataB[4], rad30_dataB[5], rad30_dataB[6], rad30_dataB[7], rad30_isolateB)[0]
+rad30_polymer_countsB = GetPolymerCounts(rad30_dataB[0],  rad30_dataB[2], rad30_dataB[3], rad30_dataB[4], rad30_dataB[5], rad30_dataB[6], rad30_dataB[7], rad30_dataB[9], rad30_dataB[10])[0]
 rad30_CcountB = rad30_polymer_countsB[0]
 rad30_TcountB = rad30_polymer_countsB[1]
 
@@ -1537,35 +2100,58 @@ f14.close()
 f14a.close()
 f14b.close()
 
+
 WT_isolate_list = {}
 for i1 in range(0, len(WT_isolate)):
 
     if WT_isolate[i1] not in WT_isolate_list.keys():
-            WT_isolate_list[WT_isolate[i1]] = [(WT_position[i1],  str(WT_chromosome[i1]), WT_trinucleotide[i1], WT_mutation[i1], WT_strand[i1], WT_multinucleotide[i1], WT_isolate[i1], WT_position1[i1])]
+            WT_isolate_list[WT_isolate[i1]] = [(WT_position[i1],  str(WT_chromosome[i1]), WT_trinucleotide[i1], WT_mutation[i1], WT_strand[i1], WT_multinucleotide[i1], WT_isolate[i1], WT_position1[i1], WT_mutation_type[i1])]
     else:
-        WT_isolate_list[WT_isolate[i1]] .append((WT_position[i1],  str(WT_chromosome[i1]), WT_trinucleotide[i1], WT_mutation[i1], WT_strand[i1], WT_multinucleotide[i1], WT_isolate[i1], WT_position1[i1]))
+        WT_isolate_list[WT_isolate[i1]] .append((WT_position[i1],  str(WT_chromosome[i1]), WT_trinucleotide[i1], WT_mutation[i1], WT_strand[i1], WT_multinucleotide[i1], WT_isolate[i1], WT_position1[i1], WT_mutation_type[i1]))
+
+
 rad16_isolate_list = {}
 for i1 in range(0, len(rad16_isolate)):
 
     if rad16_isolate[i1] not in rad16_isolate_list.keys():
-            rad16_isolate_list[rad16_isolate[i1]] = [(rad16_position[i1],  str(rad16_chromosome[i1]), rad16_trinucleotide[i1], rad16_mutation[i1], rad16_strand[i1], rad16_multinucleotide[i1], rad16_isolate[i1], rad16_position1[i1])]
+            rad16_isolate_list[rad16_isolate[i1]] = [(rad16_position[i1],  str(rad16_chromosome[i1]), rad16_trinucleotide[i1], rad16_mutation[i1], rad16_strand[i1], rad16_multinucleotide[i1], rad16_isolate[i1], rad16_position1[i1], rad16_mutation_type[i1])]
     else:
-        rad16_isolate_list[rad16_isolate[i1]] .append((rad16_position[i1],  str(rad16_chromosome[i1]), rad16_trinucleotide[i1], rad16_mutation[i1], rad16_strand[i1], rad16_multinucleotide[i1], rad16_isolate[i1], rad16_position1[i1]))
+        rad16_isolate_list[rad16_isolate[i1]] .append((rad16_position[i1],  str(rad16_chromosome[i1]), rad16_trinucleotide[i1], rad16_mutation[i1], rad16_strand[i1], rad16_multinucleotide[i1], rad16_isolate[i1], rad16_position1[i1], rad16_mutation_type[i1]))
+
+
+rad26_isolate_list = {}
+for i1 in range(0, len(rad26_isolate)):
+
+    if rad26_isolate[i1] not in rad26_isolate_list.keys():
+            rad26_isolate_list[rad26_isolate[i1]] = [(rad26_position[i1],  str(rad26_chromosome[i1]), rad26_trinucleotide[i1], rad26_mutation[i1], rad26_strand[i1], rad26_multinucleotide[i1], rad26_isolate[i1], rad26_position1[i1], rad26_mutation_type[i1])]
+    else:
+        rad26_isolate_list[rad26_isolate[i1]] .append((rad26_position[i1],  str(rad26_chromosome[i1]), rad26_trinucleotide[i1], rad26_mutation[i1], rad26_strand[i1], rad26_multinucleotide[i1], rad26_isolate[i1], rad26_position1[i1], rad26_mutation_type[i1]))
+
+
+
 WT_isolate_listB = {}
 for i1 in range(0, len(WT_isolateB)):
 
     if WT_isolateB[i1] not in WT_isolate_listB.keys():
-            WT_isolate_listB[WT_isolateB[i1]] = [(WT_positionB[i1], str(WT_chromosomeB[i1]), WT_trinucleotideB[i1], WT_mutationB[i1], WT_strandB[i1], WT_multinucleotideB[i1], WT_isolateB[i1], WT_position1B[i1])]
+            WT_isolate_listB[WT_isolateB[i1]] = [(WT_positionB[i1], str(WT_chromosomeB[i1]), WT_trinucleotideB[i1], WT_mutationB[i1], WT_strandB[i1], WT_multinucleotideB[i1], WT_isolateB[i1], WT_position1B[i1],WT_mutation_typeB[i1] )]
     else:
-        WT_isolate_listB[WT_isolateB[i1]].append((WT_positionB[i1],  str(WT_chromosomeB[i1]), WT_trinucleotideB[i1], WT_mutationB[i1], WT_strandB[i1], WT_multinucleotideB[i1], WT_isolateB[i1], WT_position1B[i1]))
+        WT_isolate_listB[WT_isolateB[i1]].append((WT_positionB[i1],  str(WT_chromosomeB[i1]), WT_trinucleotideB[i1], WT_mutationB[i1], WT_strandB[i1], WT_multinucleotideB[i1], WT_isolateB[i1], WT_position1B[i1], WT_mutation_typeB[i1]))
 
 rad16_isolate_listB = {}
 for i1 in range(0, len(rad16_isolateB)):
 
     if rad16_isolateB[i1] not in rad16_isolate_listB.keys():
-            rad16_isolate_listB[rad16_isolateB[i1]] = [(rad16_positionB[i1],  str(rad16_chromosomeB[i1]), rad16_trinucleotideB[i1], rad16_mutationB[i1], rad16_strandB[i1], rad16_multinucleotideB[i1], rad16_isolateB[i1], rad16_position1B[i1])]
+            rad16_isolate_listB[rad16_isolateB[i1]] = [(rad16_positionB[i1],  str(rad16_chromosomeB[i1]), rad16_trinucleotideB[i1], rad16_mutationB[i1], rad16_strandB[i1], rad16_multinucleotideB[i1], rad16_isolateB[i1], rad16_position1B[i1], rad16_mutation_typeB[i1])]
     else:
-        rad16_isolate_listB[rad16_isolateB[i1]] .append((rad16_positionB[i1],  str(rad16_chromosomeB[i1]), rad16_trinucleotideB[i1], rad16_mutationB[i1], rad16_strandB[i1], rad16_multinucleotideB[i1], rad16_isolateB[i1], rad16_position1B[i1]))
+        rad16_isolate_listB[rad16_isolateB[i1]] .append((rad16_positionB[i1],  str(rad16_chromosomeB[i1]), rad16_trinucleotideB[i1], rad16_mutationB[i1], rad16_strandB[i1], rad16_multinucleotideB[i1], rad16_isolateB[i1], rad16_position1B[i1], rad16_mutation_typeB[i1]))
+
+rad26_isolate_listB = {}
+for i1 in range(0, len(rad26_isolateB)):
+
+    if rad26_isolateB[i1] not in rad26_isolate_listB.keys():
+            rad26_isolate_listB[rad26_isolateB[i1]] = [(rad26_positionB[i1],  str(rad26_chromosomeB[i1]), rad26_trinucleotideB[i1], rad26_mutationB[i1], rad26_strandB[i1], rad26_multinucleotideB[i1], rad26_isolateB[i1], rad26_position1B[i1], rad26_mutation_typeB[i1])]
+    else:
+        rad26_isolate_listB[rad26_isolateB[i1]] .append((rad26_positionB[i1],  str(rad26_chromosomeB[i1]), rad26_trinucleotideB[i1], rad26_mutationB[i1], rad26_strandB[i1], rad26_multinucleotideB[i1], rad26_isolateB[i1], rad26_position1B[i1], rad26_mutation_typeB[i1]))
 
 #Obtain the total number of bases in the yeast genome in sequences of each homopolymer length
 def NormalizeHomopolymer(sequences,  file):
@@ -1828,63 +2414,140 @@ def FindClusters( isolate_list, homopolymers):
             sorted_isolate_list = sorted(isolate_list[key])
             sorted_list = sorted(sorted_isolate_list, key = index)
             if sorted_list[0][1] == sorted_list[1][1] and (int(sorted_list[1][0]) <= int((sorted_list[ 0][0])) + 10):
-                if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][6]) not in clusters.keys():
+                if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][6]) not in clusters.keys() and (sorted_list[0][8] == 'SNV' or sorted_list[0][8] == 'SNP'):
                     clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][6])] = [sorted_list[0]]
                    
-                if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][6]) not in clusters.keys():
+                if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][6]) not in clusters.keys() and (sorted_list[1][8] == 'SNV' or sorted_list[1][8] == 'SNP'):
                     clusters[(sorted_list[1][6], sorted_list[1][1], sorted_list[1][6])] = [sorted_list[1]]
                     
             else:#if strand[0] == '+':
-                end_position = GetHomopolymerLength(sorted_list[0][5], int(sorted_list[0][7]), int(sorted_list[0][0]), int(len(sorted_list[0][5])/2) + 1)[1][1]
+                if (sorted_list[0][8] == "DIP"  and '-' not in sorted_list[0][3])or sorted_list[0][8] == "Insertion": 
+                            if sorted_list[0][4] == '-':
+                                DNA_strand = "-"
+                                end_position = GetHomopolymerLengthIns(GetReverseComplement(sorted_list[0][5]), int(sorted_list[j][7]), int(sorted_list[0][0]), int(len(sorted_list[0][5])/2) + 1, DNA_strand)[1][1] 
+                            else:
+                                DNA_strand = "+"
+                                end_position = GetHomopolymerLengthIns(sorted_list[0][5], int(sorted_list[0][7]), int(sorted_list[0][0]), int(len(sorted_list[0][5])/2) + 1, DNA_strand)[1][1] 
+                else:    
+                            if sorted_list[0][4] == '-':
+                                end_position = GetHomopolymerLength(GetReverseComplement(sorted_list[0][5]), int(sorted_list[0][7]), int(sorted_list[0][0]), int(len(sorted_list[0][5])/2) + 1)[1][1] 
+                            else:
+                                end_position = GetHomopolymerLength(sorted_list[0][5], int(sorted_list[0][7]), int(sorted_list[0][0]), int(len(sorted_list[0][5])/2) + 1)[1][1] 
+
                 if int(sorted_list[1][0]) <= (end_position + 10) and sorted_list[0][1] == sorted_list[1][1]:
-                    if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][6]) not in clusters.keys():
+                    if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][6]) not in clusters.keys() and (sorted_list[0][8] == 'SNV' or sorted_list[0][8] == 'SNP'):
                         clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][6])] = [sorted_list[0]]
-                    if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][6]) not in clusters.keys():
+                    if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][6]) not in clusters.keys() and (sorted_list[1][8] == 'SNV' or sorted_list[1][8] == 'SNP'):
                         clusters[(sorted_list[1][6], sorted_list[1][1], sorted_list[1][6])] = [sorted_list[1]]
-                start_position = GetHomopolymerLength(sorted_list[1][5], int(sorted_list[1][7]), int(sorted_list[1][0]), int(len(sorted_list[1][5])/2) + 1)[1][0]
+                
+                if ('-' not in sorted_list[1][3] and sorted_list[0][8] == "DIP") or sorted_list[1][8] == "Insertion":
+                    if sorted_list[1][4] == '-':
+                        DNA_strand = '-'
+                        start_position = GetHomopolymerLengthIns(GetReverseComplement(sorted_list[1][5]), int(sorted_list[1][7]), int(sorted_list[1][0]), int(len(sorted_list[1][5])/2) + 1, DNA_strand)[1][0]
+                    else:
+                        DNA_strand = '+'
+                        start_position = GetHomopolymerLengthIns(sorted_list[1][5], int(sorted_list[1][7]), int(sorted_list[1][0]), int(len(sorted_list[1][5])/2) + 1, DNA_strand)[1][0] 
+                else:    
+                    if sorted_list[1][4] == '-':
+                        start_position = GetHomopolymerLength(GetReverseComplement(sorted_list[1][5]), int(sorted_list[1][7]), int(sorted_list[1][0]), int(len(sorted_list[1][5])/2) + 1)[1][0] 
+                    else:
+                        start_position = GetHomopolymerLength(sorted_list[1][5], int(sorted_list[1][7]), int(sorted_list[1][0]), int(len(sorted_list[1][5])/2) + 1)[1][0] 
+                
+                
+                #start_position = GetHomopolymerLength(sorted_list[1][5], int(sorted_list[1][7]), int(sorted_list[1][0]), int(len(sorted_list[1][5])/2) + 1)[1][0]
                 if start_position <= (sorted_list[0][0] + 10) and sorted_list[0][1] == sorted_list[1][1]:
-                    if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][6]) not in clusters.keys():
+                    if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][6]) not in clusters.keys() and (sorted_list[0][8] == 'SNV' or sorted_list[0][8] == 'SNP'):
                         clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][6])] = [sorted_list[0]]
-                    if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][6]) not in clusters.keys():
+                    if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][6]) not in clusters.keys() and (sorted_list[1][8] == 'SNV' or sorted_list[1][8] == 'SNP'):
                         clusters[(sorted_list[1][6], sorted_list[1][1], sorted_list[1][6])] = [sorted_list[1]]
             if sorted_list[len (sorted_list) - 2][1] == sorted_list[len (sorted_list) - 1][1] and (int(sorted_list[len (sorted_list) - 1][0]) <= int((sorted_list[ len (sorted_list) - 2][0])) + 10):
-                if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6]) not in clusters.keys():
+                if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6]) not in clusters.keys() and (sorted_list[len(sorted_list) - 1][8] == 'SNV' or sorted_list[len(sorted_list) - 1][8] == 'SNP'):
                     clusters[(sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6])] = [sorted_list[len(sorted_list) - 1]]
                   
-                if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6]) not in clusters.keys():
+                if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6]) not in clusters.keys() and (sorted_list[len(sorted_list) - 2][8] == 'SNV' or sorted_list[len(sorted_list) - 2][8] == 'SNP'):
                     clusters[(sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6])] = [sorted_list[len(sorted_list) - 2]]
                     
             else:#if strand[0] == '+':
-                end_position = GetHomopolymerLength(sorted_list[len(sorted_list) - 2][5], int(sorted_list[len(sorted_list) - 2][7]), int(sorted_list[len(sorted_list) - 2][0]), int(len(sorted_list[len(sorted_list) - 2][5])/2) + 1)[1][1]
+                #end_position = GetHomopolymerLength(sorted_list[len(sorted_list) - 2][5], int(sorted_list[len(sorted_list) - 2][7]), int(sorted_list[len(sorted_list) - 2][0]), int(len(sorted_list[len(sorted_list) - 2][5])/2) + 1)[1][1]
+                if (sorted_list[len(sorted_list) - 2][8] == "DIP" and '-' not in sorted_list[len(sorted_list) - 2][3]) or sorted_list[len(sorted_list) - 2][8] == "Insertion":
+                    if sorted_list[len(sorted_list) - 2][4] == '-':
+                        DNA_strand = "-"
+                        end_position = GetHomopolymerLengthIns(GetReverseComplement(sorted_list[len(sorted_list) - 2][5]), int(sorted_list[len(sorted_list) - 2][7]), int(sorted_list[len(sorted_list) - 2][0]), int(len(sorted_list[len(sorted_list) - 2][5])/2) + 1, DNA_strand)[1][1] 
+                    else:
+                        DNA_strand = "+"
+                        end_position = GetHomopolymerLengthIns(sorted_list[len(sorted_list) - 2][5], int(sorted_list[len(sorted_list) - 2][7]), int(sorted_list[len(sorted_list) - 2][0]), int(len(sorted_list[len(sorted_list) - 2][5])/2) + 1, DNA_strand)[1][1] 
+                else:    
+                    if sorted_list[len(sorted_list) - 2][4] == '-':
+                        end_position = GetHomopolymerLength(GetReverseComplement(sorted_list[len(sorted_list) - 2][5]), int(sorted_list[len(sorted_list) - 2][7]), int(sorted_list[len(sorted_list) - 2][0]), int(len(sorted_list[len(sorted_list) - 2][5])/2) + 1)[1][1] 
+                    else:
+                        end_position = GetHomopolymerLength(sorted_list[len(sorted_list) - 2][5], int(sorted_list[len(sorted_list) - 2][7]), int(sorted_list[len(sorted_list) - 2][0]), int(len(sorted_list[len(sorted_list) - 2][5])/2) + 1)[1][1] 
+                
+                
                 if int(sorted_list[len(sorted_list) - 1][0]) <= (end_position + 10) and sorted_list[len(sorted_list) - 1][1] == sorted_list[len(sorted_list) - 2][1]:
-                    if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6]) not in clusters.keys():
+                    if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6]) not in clusters.keys() and (sorted_list[len(sorted_list) - 1][8] == 'SNV' or sorted_list[len(sorted_list) - 1][8] == 'SNP'):
                         clusters[(sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6])] = [sorted_list[len(sorted_list) - 1]]
-                    if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6]) not in clusters.keys():
+                    if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6]) not in clusters.keys() and (sorted_list[len(sorted_list) - 2][8] == 'SNV' or sorted_list[len(sorted_list) - 2][8] == 'SNP'):
                         clusters[(sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6])] = [sorted_list[len(sorted_list) - 2]]
-                start_position = GetHomopolymerLength(sorted_list[len(sorted_list) - 1][5], int(sorted_list[len(sorted_list) - 1][7]), int(sorted_list[len(sorted_list) - 1][0]), int(len(sorted_list[len(sorted_list) - 1][5])/2) + 1)[1][0]
+                #start_position = GetHomopolymerLength(sorted_list[len(sorted_list) - 1][5], int(sorted_list[len(sorted_list) - 1][7]), int(sorted_list[len(sorted_list) - 1][0]), int(len(sorted_list[len(sorted_list) - 1][5])/2) + 1)[1][0]
+                if (sorted_list[len(sorted_list) - 1][8] == "DIP" and '-' not in sorted_list[len(sorted_list) - 1][3]) or sorted_list[len(sorted_list) - 1][8] == "Insertion": 
+                    if sorted_list[len(sorted_list) - 1][4] == '-':
+                        DNA_strand = "-"
+                        start_position = GetHomopolymerLengthIns(GetReverseComplement(sorted_list[len(sorted_list) - 1][5]), int(sorted_list[len(sorted_list) - 1][7]), int(sorted_list[len(sorted_list) - 1][0]), int(len(sorted_list[len(sorted_list) - 1][5])/2) + 1, DNA_strand)[1][0]
+                    else:
+                        DNA_strand = "+"
+                        start_position = GetHomopolymerLengthIns(sorted_list[len(sorted_list) - 1][5], int(sorted_list[len(sorted_list) - 1][7]), int(sorted_list[len(sorted_list) - 1][0]), int(len(sorted_list[len(sorted_list) - 1][5])/2) + 1, DNA_strand)[1][0]    
+                else:    
+                    if sorted_list[len(sorted_list) - 1][4] == '-':
+                        start_position = GetHomopolymerLength(GetReverseComplement(sorted_list[len(sorted_list) - 1][5]), int(sorted_list[len(sorted_list) - 1][7]), int(sorted_list[len(sorted_list) - 1][0]), int(len(sorted_list[len(sorted_list) - 1][5])/2) + 1)[1][0]
+                    else:
+                        start_position = GetHomopolymerLength(sorted_list[len(sorted_list) - 1][5], int(sorted_list[len(sorted_list) - 1][7]), int(sorted_list[len(sorted_list) - 1][0]), int(len(sorted_list[len(sorted_list) - 1][5])/2) + 1)[1][0]
                 if start_position <= (sorted_list[len(sorted_list) - 2][0] + 10) and sorted_list[len(sorted_list) - 2][1] == sorted_list[len(sorted_list) - 1][1]:
-                    if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6]) not in clusters.keys():
+                    if (sorted_list[len(sorted_list) - 1][6], sorted_list[len(sorted_list) - 1][1], sorted_list[len(sorted_list) - 1][6]) not in clusters.keys() and (sorted_list[len(sorted_list) - 1][8] == 'SNV' or sorted_list[len(sorted_list) - 1][8] == 'SNP'):
                         clusters[(sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6])] = [sorted_list[len(sorted_list) - 1]]
-                    if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6]) not in clusters.keys():
+                    if (sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6]) not in clusters.keys() and (sorted_list[len(sorted_list) - 2][8] == 'SNV' or sorted_list[len(sorted_list) - 2][8] == 'SNP'):
                         clusters[(sorted_list[len(sorted_list) - 2][6], sorted_list[len(sorted_list) - 2][1], sorted_list[len(sorted_list) - 2][6])] = [sorted_list[len(sorted_list) - 2]]
                    
             for j in range (1,len (sorted_list) - 1):
                     if (sorted_list[j][1] == sorted_list[j - 1][1] and (int(sorted_list[j][0]) <= int((sorted_list[j - 1][0])) + 10)) or (sorted_list[j + 1][1] == sorted_list[j][1] and (int(sorted_list[j + 1][0]) <= int((sorted_list[j][0])) + 10)): #or ((isolate_list[key][j + n][6], int(isolate_list[key][j + n][0]), isolate_list[key][j + n][1]) in homopolymers.keys() and (int(isolate_list[key][j + n][0]) <= int((isolate_list[key][j + n - 1][0])) + 10 + homopolymers[key])) : 
-                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys():
+                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys() and (sorted_list[j][8] == 'SNV' or sorted_list[j][8] == 'SNP'):
                                 #if j == 0 or isolate_list[key][j - n] not in clusters.keys():
                                 clusters[(sorted_list[j][6], sorted_list[j][1], sorted_list[j][0])] = [sorted_list[j]]
                     else:
-                        end_position = GetHomopolymerLength(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][1]
+                        #end_position = GetHomopolymerLength(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][1]
+                        if (sorted_list[j][8] == "DIP"  and '-' not in sorted_list[j][3])or sorted_list[j][8] == "Insertion": 
+                            if sorted_list[j][4] == '-':
+                                DNA_strand = "-"
+                                end_position = GetHomopolymerLengthIns(GetReverseComplement(sorted_list[j][5]), int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1, DNA_strand)[1][1] 
+                            else:
+                                DNA_strand = "+"
+                                end_position = GetHomopolymerLengthIns(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1, DNA_strand)[1][1] 
+                        else:    
+                            if sorted_list[j][4] == '-':
+                                end_position = GetHomopolymerLength(GetReverseComplement(sorted_list[j][5]), int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][1] 
+                            else:
+                                end_position = GetHomopolymerLength(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][1] 
                         if int(sorted_list[j + 1][0]) <= (end_position + 10) and sorted_list[j][1] == sorted_list[j + 1][1]:
-                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys():
+                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys() and (sorted_list[j][8] == 'SNV' or sorted_list[j][8] == 'SNP'):
                                 clusters[(sorted_list[j][6], sorted_list[j][1], sorted_list[j][0])] = [sorted_list[j]]
-                            if (sorted_list[j + 1][6], sorted_list[j + 1][1], sorted_list[j + 1][0]) not in clusters.keys():
-                                clusters[(sorted_list[j + 1][6], sorted_list[j + 1][1], sorted_list[j + 1][0])] = (sorted_list[j + 1])
-                        start_position = GetHomopolymerLength(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][0]
+                            if (sorted_list[j + 1][6], sorted_list[j + 1][1], sorted_list[j + 1][0]) not in clusters.keys() and (sorted_list[j + 1][8] == 'SNV' or sorted_list[j + 1][8] == 'SNP'):
+                                clusters[(sorted_list[j + 1][6], sorted_list[j + 1][1], sorted_list[j + 1][0])] = [sorted_list[j + 1]]
+                        #start_position = GetHomopolymerLength(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][0]
+                        if (sorted_list[j][8] == "DIP"  and '-' not in sorted_list[j][3])or sorted_list[j][8] == "Insertion":
+                            if sorted_list[j][4] == '-':
+                                DNA_strand = "-"
+                                start_position = GetHomopolymerLengthIns(GetReverseComplement(sorted_list[j][5]), int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1, DNA_strand)[1][0] 
+                            else:
+                                DNA_strand = "+"
+                                start_position = GetHomopolymerLengthIns(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1, DNA_strand)[1][0] 
+                        elif int(sorted_list[j][0]) != int((sorted_list[j + 1][0])) and int(sorted_list[j][0]) != int((sorted_list[j - 1][0])):    
+                            if sorted_list[j][4] == '-':
+                                start_position = GetHomopolymerLength(GetReverseComplement(sorted_list[j][5]), int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][0] 
+                            else:
+                                start_position = GetHomopolymerLength(sorted_list[j][5], int(sorted_list[j][7]), int(sorted_list[j][0]), int(len(sorted_list[j][5])/2) + 1)[1][0] 
                         if start_position <= (sorted_list[j - 1][0] + 10) and sorted_list[j - 1][1] == sorted_list[j][1]:
-                            if (sorted_list[j - 1][6], sorted_list[j - 1][1], sorted_list[j - 1][0]) not in clusters.keys():
+                            if (sorted_list[j - 1][6], sorted_list[j - 1][1], sorted_list[j - 1][0]) not in clusters.keys() and (sorted_list[j - 1][8] == 'SNV' or sorted_list[j - 1][8] == 'SNP'):
                                 clusters[(sorted_list[j - 1][6], sorted_list[j - 1][1], sorted_list[j - 1][0])] = [sorted_list[j - 1]]
-                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys():
+                            if (sorted_list[j][6], sorted_list[j][1], sorted_list[j][0]) not in clusters.keys() and (sorted_list[j][8] == 'SNV' or sorted_list[j][8] == 'SNP'):
                                 clusters[(sorted_list[j][6], sorted_list[j][1], sorted_list[j][0])] = [sorted_list[j]]           
                     #elif (sorted_list[j][1] == sorted_list[j + 1][1]) and(sorted_list[j][6], int(sorted_list[j][0]), sorted_list[j][1]) in homopolymers.keys() and (int(sorted_list[j + 1][0]) <= int((sorted_list[j][0])) + 10 + (homopolymers[(sorted_list[j][6], int(sorted_list[j][0]), sorted_list[j][1])][0][1] - sorted_list[j][0])):
                         #if sorted_list[j] not in clusters.keys() and (sorted_list[j][7] == "DIP" or sorted_list[j][7] == "Complex DIP" or sorted_list[key][j][7] == "Deletion" or sorted_list[j][7] == "Insertion"):
@@ -1909,5 +2572,7 @@ def FindClusters( isolate_list, homopolymers):
 
 FindClusters(WT_isolate_list, WT_homopolymers)
 FindClusters(rad16_isolate_list, rad16_homopolymers)
+FindClusters(rad26_isolate_list, rad26_homopolymers)
 FindClusters(WT_isolate_listB, WT_homopolymersB)
 FindClusters(rad16_isolate_listB, rad16_homopolymersB)
+FindClusters(rad26_isolate_listB, rad26_homopolymersB)
