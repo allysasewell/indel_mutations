@@ -3637,7 +3637,6 @@ MakeClusterFiles(clustersB[0], clustersB[1], e1, e2, e3, e4)
 MakeClusterFiles(clusters16B[0], clusters16B[1], f1, f2, f3, f4)
 MakeClusterFiles(clusters26B[0], clusters26B[1],g1, g2, g3, g4)
 #MakeClusterFiles(clusters30B[0], clusters30B[1], h1, h2, h3, h4)
-
 a1.close()
 a2.close()
 a3.close()
