@@ -228,7 +228,7 @@ for line in lines:
                 rad30_chromosomes[str(line[6])] = rad30_chromosomes[str(line[6])] + 1
             else:
                 rad30_chromosomes[str(line[6])] = 1
-        position1.append(int(line[9]) - 1)
+        position1.append(int(line[9]) - len(line[13]))
        
         position2.append(int(line[9]))
         length.append(line[11])
@@ -535,8 +535,18 @@ for line in lines2:
                 rad30_chromosomes2[chromosome2[len(chromosome2) - 1]] = 1
             if line[13] == "Deletion" or line[13] == "Insertion" or line[14] == "Deletion" or line[14] == "Insertion":
                 rad30_indels_2 = rad30_indels_2 + 1
-        position1_2.append(int(getStrforInt(line[6])) - 1)
-        position2_2.append(int(getStrforInt(line[6])))
+        if line[6].isnumeric():
+            if line[14] == '-':
+                position1_2.append(int(line[6]) - len(line[15]))
+            else:
+                position1_2.append(int(line[6]) - len(line[14]))
+            position2_2.append(int(line[6]))
+        else:
+           
+            new_str = getStrforInt(line[6])
+
+            position2_2.append(int(new_str))
+            position1_2.append(int(new_str) - len(line[14]))
         allele2.append(line[14])
         #if line[14] == 'C' or line[14] == 'T':
         mutation2.append(line[15])
@@ -718,7 +728,7 @@ def WriteChr(chr_name, file1a, file1b, file1c, file1d, chromosome, position1, po
         #if mutation_type[x] == 'SNV' or mutation_type[x] == 'SNP':
                 if trinucleotide[x].isalpha():# len(trinucleotide[x]) == 3 and trinucleotide[x].isalpha():
                     if chromosome[x] == chr_name: 
-                        chromosome1_dict[int(position1[x]), isolate[x]] = x
+                        chromosome1_dict[int(position2[x]), isolate[x]] = x
                 
 
 
@@ -2612,4 +2622,3 @@ d.close()
 e.close()
 f.close()
 g.close()
-
