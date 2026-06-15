@@ -1893,13 +1893,13 @@ def GetPolymerCounts(pentanucleotide,  new_chromosome, new_position, new_trinucl
             print(pentanucleotide[i])
             print(key)
 
-            if new_allele[i] == 'C' or new_allele[i] == 'G' and (new_mutation_type[i] == 'SNP' or new_mutation_type[i] == 'SNV'):
+            if (new_allele[i] == 'C' or new_allele[i] == 'G') and (new_mutation_type[i] == 'SNP' or new_mutation_type[i] == 'SNV'):
 
                 if key in polymer_counts[0].keys():
                     polymer_counts[0][key] = polymer_counts[0][key] + 1
                 else:
                     polymer_counts[0][key] = 1
-            if new_allele[i] == 'A' or new_allele[i] == 'T' and (new_mutation_type[i] == 'SNP' or new_mutation_type[i] == 'SNV'):
+            if (new_allele[i] == 'A' or new_allele[i] == 'T') and (new_mutation_type[i] == 'SNP' or new_mutation_type[i] == 'SNV'):
 
                 if key in polymer_counts[1].keys():
                     polymer_counts[1][key] = polymer_counts[1][key] + 1
