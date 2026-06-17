@@ -529,6 +529,7 @@ def MutationsPerIsolate( isolate_list): #Counts the number of insertions and del
        
 
 MutationsPerIsolate(isolate_list)
+MutationsPerIsolate(WT_isolate_list)
 
 
 rad30_deletions = {}  
@@ -599,20 +600,20 @@ def WriteChr(chr_name, file1, file2,  file3, chromosome, position, position1,
         file_data.append(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position1[chromosome1_dict[sorted_chromosome1[y]]] )) + '\t' + str(position[chromosome1_dict[sorted_chromosome1[y]]]) + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + strand[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + allele[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + isolate[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[y]]])
         #print(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position1[chromosome1_dict[sorted_chromosome1[y]]]) - 1) + '\t' + position2[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[y]]])
     for fd in range(0, len(file_data)):
-        if '-' in allele[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in mutation[chromosome1_dict[sorted_chromosome1[fd]]]:
+        #if '-' in allele[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in mutation[chromosome1_dict[sorted_chromosome1[fd]]]:
             file1.write(file_data[fd])
             file3.write(file_data[fd])
             file1.write('\n')
             file3.write('\n')
             
 
-        elif '-' in mutation[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in allele[chromosome1_dict[sorted_chromosome1[fd]]]:# and len(trinucleotide[chromosome1_dict[sorted_chromosome1[fd]]]) == 3:
+        #elif '-' in mutation[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in allele[chromosome1_dict[sorted_chromosome1[fd]]]:# and len(trinucleotide[chromosome1_dict[sorted_chromosome1[fd]]]) == 3:
             file2.write(file_data[fd])
             file3.write(file_data[fd])
             file2.write('\n')
             file3.write('\n')
                 
-        else:
+        #else:
             file3.write(file_data[fd])
             file3.write('\n')
 
@@ -2287,8 +2288,15 @@ rad30_file2 = open('rad30_ins', 'w+')
 WT_file = open('WT_del', 'w+')
 WT_file2 = open('WT_ins', 'w+')
 
-def PrintFrequencies( polymer_counts, C_dict, T_dict, file):
-    for a in range(0, len(polymer_counts)):
+def PrintFrequencies( polymer_counts, C_dict, T_dict, file, file2):
+    totals = {}
+
+    for a in range(0, 2):
+        for key in polymer_counts[a]:
+            if key not in totals.keys():
+                totals[key] = polymer_counts[a][key]
+            else:
+                totals[key] = totals[key] + polymer_counts[a][key]
         if a %2 == 0:
             for key in polymer_counts[a]:
                 file.write(str(key) + " :" + str(polymer_counts[a][key]/C_dict[key]))
@@ -2297,17 +2305,69 @@ def PrintFrequencies( polymer_counts, C_dict, T_dict, file):
             for key in polymer_counts[a]:
                 file.write(str(key) + " :" + str(polymer_counts[a][key]/T_dict[key])) 
                 file.write("\n") 
+    C_dict['9+'] = 0
+    T_dict['9+'] = 0
+    for key in C_dict.keys():
+        if isinstance(key, int):
+            if key >= 9:
+                C_dict['9+'] = C_dict['9+'] + C_dict[key]
+    for key in T_dict.keys():
+        if isinstance(key, int):
+            if key >= 9:
+                T_dict['9+'] = T_dict['9+'] + T_dict[key]
+
+    totals['9+'] = 0
+    for key in totals.keys():
+        if isinstance(key, int):
+            if key >= 9:
+                totals['9+'] = totals['9+'] + totals[key]
+
+        
+
+    for key in totals.keys():
+        if key in C_dict.keys():
+            file.write(str(key) + " :" + str(totals[key]/(C_dict[key] + T_dict[key])))
+        else:
+            file.write(str(key) + " :" + str(totals[key]/(T_dict[key])))
+        file.write("\n") 
+
+    totals2 = {}
+
+    for a in range(2, 4):
+        for key in polymer_counts[a]:
+            if key not in totals2.keys():
+                totals2[key] = polymer_counts[a][key]
+            else:
+                totals2[key] = totals2[key] + polymer_counts[a][key]
+        if a %2 == 0:
+            for key in polymer_counts[a]:
+                file2.write(str(key) + " :" + str(polymer_counts[a][key]/C_dict[key]))
+                file2.write("\n") 
+        else:
+            for key in polymer_counts[a]:
+                file2.write(str(key) + " :" + str(polymer_counts[a][key]/T_dict[key])) 
+                file2.write("\n") 
+    totals2['9+'] = 0
+    for key in totals2.keys():
+        if isinstance(key, int):
+            if key >= 9:
+                totals2['9+'] = totals2['9+'] + totals2[key]
+    for key in totals2.keys():
+        if key in C_dict.keys():
+            file2.write(str(key) + " :" + str(totals2[key]/(C_dict[key] + T_dict[key])))
+        else:
+            file2.write(str(key) + " :" + str(totals2[key]/(T_dict[key])))
+        file2.write("\n") 
 
 
-PrintFrequencies( polymer_counts, C_dict, T_dict, rad30_file)
-
-PrintFrequencies( polymer_counts2, C_dict, T_dict, rad30_file2)
+PrintFrequencies( polymer_counts, C_dict, T_dict, rad30_file, rad30_file2)
 
 
-PrintFrequencies( polymer_counts4, C_dict, T_dict, WT_file)
+
+PrintFrequencies( polymer_counts4, C_dict, T_dict, WT_file, WT_file2)
 
 
-PrintFrequencies( polymer_counts5, C_dict, T_dict, WT_file2)
+
 
 
 homopolymer_file.close()
@@ -2583,6 +2643,7 @@ def FindClusters( isolate_list, list2, homopolymers):
         else:
             multi_insertion.append(clusters[key])
     return clusters, nonclusters
+
 
 
 clusters = FindClusters(isolate_list, rad30_isolatelist, homopolymer3)
