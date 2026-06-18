@@ -3076,19 +3076,19 @@ x10.close()
 x11.close()
 x12.close()
 
-t1 = open("C_deletions_nonclusters.txt", 'w+')
-t2 = open("c_insertions_nonclusters.txt", 'w+')
-t3 = open("t_deletions_nonclusters.txt", 'w+')
-t4 = open("t_insertions_nonclusters.txt", 'w+')
-t5 = open("c_indels_nonclusters.txt", 'w+')
-t6 = open("t_indels_nonclusters.txt", 'w+')
+t1 = open("C_deletions.txt", 'w+')
+t2 = open("c_insertions.txt", 'w+')
+t3 = open("t_deletions.txt", 'w+')
+t4 = open("t_insertions.txt", 'w+')
+t5 = open("c_indels.txt", 'w+')
+t6 = open("t_indels.txt", 'w+')
 
-t7 = open("WT_c_deletions_nonclusters.txt", 'w+')
-t8 = open("WT_c_insertions_nonclusters.txt", 'w+')
-t9 = open("WT_t_deletions_nonclusters.txt", 'w+')
-t10 = open("WT_t_insertions_nonclusters.txt", 'w+')
-t11 = open("WT_c_indels_nonclusters.txt", 'w+')
-t12 = open("WT_t_indels_nonclusters.txt", 'w+')
+t7 = open("WT_c_deletions.txt", 'w+')
+t8 = open("WT_c_insertions.txt", 'w+')
+t9 = open("WT_t_deletions.txt", 'w+')
+t10 = open("WT_t_insertions.txt", 'w+')
+t11 = open("WT_c_indels.txt", 'w+')
+t12 = open("WT_t_indels.txt", 'w+')
 
 
 
@@ -3118,7 +3118,7 @@ def CTMutationsPerIsolate( isolate_list, t1, t2, t3, t4, t5, t6, clusters):
         for a in range(0, len(isolate_list[key])):
             if isolate_list[key][a][9] == 'DIP'or isolate_list[key][a][9] == 'Deletion' or isolate_list[key][a][9] == 'Insertion':
             #if isolate_list[key][a][9] == 'Complex DIP' or isolate_list[key][a][9] == 'DIP'or isolate_list[key][a][9] == 'Deletion' or isolate_list[key][a][9] == 'Insertion':
-                if (isolate_list[key][a][6], isolate_list[key][a][1], isolate_list[key][a][0]) in clusters.keys():
+                #if (isolate_list[key][a][6], isolate_list[key][a][1], isolate_list[key][a][0]) in clusters.keys():
                     if isolate_list[key][a][10] == 'C':
                         d_count = d_count + 1
                         h_count = h_count + 1
