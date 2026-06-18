@@ -228,10 +228,20 @@ w2 = open("UVB_rad26_insertions_strandresults.txt", 'w+')
 w3 = open("UVB_rad30_insertions_strandresults.txt", 'w+')
 
 
-z1 = open("WT_singlebase_substitutionsv2_Trinuc_TrxStrandBins.txt")
-z2 = open("rad30_singlebase_substitutionsv2_Trinuc_TrxStrandBins.txt")
-z3 = open("WT_singlebase_substitutionsv2_strandresults.txt", 'w+')
-z4 = open("rad30_singlebase_substitutionsv2_strandresults.txt", 'w+')
+z1 = open("WT_singlebase_deletionsv2_Trinuc_TrxStrandBins.txt")
+z2 = open("rad30_singlebase_deletions_Trinuc_TrxStrandBins.txt")
+z3 = open("WT_singlebase_deletionsv2_strandresults.txt", 'w+')
+z4 = open("rad30_singlebase_deletions_strandresults.txt", 'w+')
+
+z5 = open("WT_singlebase_deletionsv2_Trinuc_homopolymer_TrxStrandBins.txt")
+z6 = open("rad30_singlebase_deletions_Trinuc_homopolymer_TrxStrandBins.txt")
+z7 = open("WT_singlebase_deletions_homopolymer_strandresults.txt", 'w+')
+z8 = open("rad30_singlebase_deletions_homopolymer_strandresults.txt", 'w+')
+
+z9 = open("WT_singlebase_insertionsv2_Trinuc_homopolymer_TrxStrandBins.txt")
+z10 = open("rad30_singlebase_insertions_Trinuc_homopolymer_TrxStrandBins.txt")
+z11 = open("WT_singlebase_insertionsv2_homopolymer_strandresults.txt", 'w+')
+z12 = open("rad30_singlebase_insertions_homopolymer_strandresults.txt", 'w+')
 
 
 
@@ -258,8 +268,12 @@ rad26_HPdel_countsB = ContextCounts(h6, i6)
 WT_HPins_countsB = ContextCounts(h7, i7)
 rad16_HPins_countsB = ContextCounts(h8, i8)
 rad26_HPins_countsB = ContextCounts(h9, i9)
-ContextCounts(z1, z3)
-ContextCounts(z2, z4)
+WT_counts2 = ContextCounts(z1, z3)
+rad30_counts = ContextCounts(z2, z4)
+WT_HPdel_counts2 = ContextCounts(z5, z7)
+rad30_HPdel_counts = ContextCounts(z6, z8)
+WT_HPins_counts2 = ContextCounts(z9, z11)
+rad30_HPins_counts = ContextCounts(z10, z12)
 
 d.close()
 d1.close()
@@ -305,6 +319,14 @@ z1.close()
 z2.close()
 z3.close()
 z4.close()
+z5.close()
+z6.close()
+z7.close()
+z8.close()
+z9.close()
+z10.close()
+z11.close()
+z12.close()
 
 
 j.close()
@@ -485,8 +507,8 @@ print(TS_base)
 
 
 #Caculates normalized percentages on the NTS and TS based on sequence context
-def FindNormalizedRatio(NTS_count, TS_count, NTS_mutations, TS_mutations):
-    mutation_ratio = TS_mutations/NTS_mutations
+def FindNormalizedRatio(NTS_count, TS_count, NTS_numbers, TS_numbers):
+    mutation_ratio = TS_numbers/NTS_numbers
     base_ratio = NTS_count/TS_count
     ratio = mutation_ratio * base_ratio
     NTS_percentage = (ratio * 100)/ (ratio + 1)
@@ -519,6 +541,13 @@ FindNormalizedRatio(rad26_HPdel_countsB[0] + rad26_HPins_countsB[0], rad26_HPdel
 # FindNormalizedRatio(WT_HPins_countsB[0], WT_HPins_countsB[1], NTS_base, TS_base)
 # FindNormalizedRatio(rad16_HPins_countsB[0], rad16_HPins_countsB[1], NTS_base, TS_base)
 # FindNormalizedRatio(rad26_HPins_countsB[0], rad26_HPins_countsB[1], NTS_base, TS_base)
+
+FindNormalizedRatio(WT_counts2[0], WT_counts2[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(rad30_counts[0], rad30_counts[1], NTS_mutations, TS_mutations)
+
+FindNormalizedRatio(WT_HPdel_counts2[0] + WT_HPins_counts2[0], WT_HPdel_counts2[1] + WT_HPins_counts2[1], NTS_base, TS_base)
+FindNormalizedRatio(rad30_HPdel_counts[0] + rad30_HPins_counts[0], rad30_HPdel_counts[1] + rad30_HPins_counts[1], NTS_base, TS_base)
+
 
 
 
