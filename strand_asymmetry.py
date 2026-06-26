@@ -411,8 +411,8 @@ def FindTC(file):
 
 strand_numbers = FindTC(file)
 
-NTS_mutations = strand_numbers[0] + strand_numbers[2]
-TS_mutations = strand_numbers[1] + strand_numbers[3]
+NTS_strand = strand_numbers[0] + strand_numbers[2]
+TS_strand = strand_numbers[1] + strand_numbers[3]
 
 file.close()
 
@@ -508,21 +508,21 @@ print(TS_base)
 
 #Caculates normalized percentages on the NTS and TS based on sequence context
 def FindNormalizedRatio(NTS_count, TS_count, NTS_numbers, TS_numbers):
-    mutation_ratio = TS_numbers/NTS_numbers
-    base_ratio = NTS_count/TS_count
-    ratio = mutation_ratio * base_ratio
+    base_ratio = TS_numbers/NTS_numbers
+    mutation_ratio = NTS_count/TS_count
+    ratio = base_ratio * mutation_ratio
     NTS_percentage = (ratio * 100)/ (ratio + 1)
     TS_percentage = 100/ (ratio + 1)
     return NTS_percentage, TS_percentage
 
 
-FindNormalizedRatio(WT_counts[0], WT_counts[1], NTS_mutations, TS_mutations)
-FindNormalizedRatio(rad16_counts[0], rad16_counts[1], NTS_mutations, TS_mutations)
-FindNormalizedRatio(rad26_counts[0], rad26_counts[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(WT_counts[0], WT_counts[1], NTS_strand, TS_strand)
+FindNormalizedRatio(rad16_counts[0], rad16_counts[1], NTS_strand, TS_strand)
+FindNormalizedRatio(rad26_counts[0], rad26_counts[1], NTS_strand, TS_strand)
 
-FindNormalizedRatio(WT_countsB[0], WT_countsB[1], NTS_mutations, TS_mutations)
-FindNormalizedRatio(rad16_countsB[0], rad16_countsB[1], NTS_mutations, TS_mutations)
-FindNormalizedRatio(rad26_countsB[0], rad26_countsB[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(WT_countsB[0], WT_countsB[1], NTS_strand, TS_strand)
+FindNormalizedRatio(rad16_countsB[0], rad16_countsB[1], NTS_strand, TS_strand)
+FindNormalizedRatio(rad26_countsB[0], rad26_countsB[1], NTS_strand, TS_strand)
 
 FindNormalizedRatio(WT_HPdel_counts[0] + WT_HPins_counts[0], WT_HPdel_counts[1] + WT_HPins_counts[1], NTS_base, TS_base)
 FindNormalizedRatio(rad16_HPdel_counts[0] + rad16_HPins_counts[0], rad16_HPdel_counts[1] + rad16_HPins_counts[1], NTS_base, TS_base)
@@ -542,8 +542,8 @@ FindNormalizedRatio(rad26_HPdel_countsB[0] + rad26_HPins_countsB[0], rad26_HPdel
 # FindNormalizedRatio(rad16_HPins_countsB[0], rad16_HPins_countsB[1], NTS_base, TS_base)
 # FindNormalizedRatio(rad26_HPins_countsB[0], rad26_HPins_countsB[1], NTS_base, TS_base)
 
-FindNormalizedRatio(WT_counts2[0], WT_counts2[1], NTS_mutations, TS_mutations)
-FindNormalizedRatio(rad30_counts[0], rad30_counts[1], NTS_mutations, TS_mutations)
+FindNormalizedRatio(WT_counts2[0], WT_counts2[1], NTS_strand, TS_strand)
+FindNormalizedRatio(rad30_counts[0], rad30_counts[1], NTS_strand, TS_strand)
 
 FindNormalizedRatio(WT_HPdel_counts2[0] + WT_HPins_counts2[0], WT_HPdel_counts2[1] + WT_HPins_counts2[1], NTS_base, TS_base)
 FindNormalizedRatio(rad30_HPdel_counts[0] + rad30_HPins_counts[0], rad30_HPdel_counts[1] + rad30_HPins_counts[1], NTS_base, TS_base)

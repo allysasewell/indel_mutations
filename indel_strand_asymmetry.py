@@ -399,7 +399,7 @@ def FindAsymmetry(file, chromosome, position1, position2, trinucleotide, strand,
                 intergenic.append([chromosome[po], position1[po], position2[po], trinucleotide[po],  strand[po]])
                 intergenic_count = intergenic_count + 1
                 po = po + 1
-    return NTS_count, TS_count, NTS_sequence_contexts, TS_sequence_contexts
+    return T_NTS, C_NTS, T_TS, C_TS, NTS_sequence_contexts, TS_sequence_contexts
 
 
 
@@ -507,15 +507,15 @@ def FindNormalizedRatios(file1, file2, NTS_count, TS_count, NTS_sequence_context
 
 
 
-FindNormalizedRatios(file1, file2, low_acral[0], low_acral[1], low_acral[2], low_acral[3])
+FindNormalizedRatios(file1, file2, low_acral[0] + low_acral[2], low_acral[1] + low_acral[3], low_acral[4], low_acral[5])
 
-FindNormalizedRatios(file1a, file2a, high_acral[0], high_acral[1], high_acral[2], high_acral[3])
+FindNormalizedRatios(file1a, file2a, high_acral[0] + high_acral[2], high_acral[1] + high_acral[3], high_acral[4], high_acral[5])
 file1.close()
 file1 = open("lowrpkm_melanocyte01_E059_gencodev10_hg19_sorted_name_strand_trinucfreq.txt")
 file1a.close()
 file1a = open("highrpkm_melanocyte01_E059_gencodev10_hg19_sorted_name_strand_trinucfreq.txt")
-FindNormalizedRatios(file1, file3, low_cutaneous[0], low_cutaneous[1], low_cutaneous[2], low_cutaneous[3])
-FindNormalizedRatios(file1a, file3a, high_cutaneous[0], high_cutaneous[1], high_cutaneous[2], high_cutaneous[3])
+FindNormalizedRatios(file1, file3, low_cutaneous[0] + low_cutaneous[2], low_cutaneous[1] + low_cutaneous[3], low_cutaneous[4], low_cutaneous[5])
+FindNormalizedRatios(file1a, file3a, high_cutaneous[0] + high_cutaneous[2], high_cutaneous[1] + high_cutaneous[3], high_cutaneous[4], high_cutaneous[5])
 
 
 file1.close()
@@ -881,11 +881,21 @@ def FindTC(file):
         elif  line[0][1] == 'C':
                  CG_TS = CG_TS + int(line[1])
                  CG_NTS = CG_NTS + int(line[2])
-    return AT_NTS, AT_TS, CG_NTS, CG_TS
+    return AT_NTS,CG_NTS, AT_TS,CG_TS
 
-FindTC(file1)
-FindTC(file1a)
+result = FindTC(file1)
+result2 = FindTC(file1a)
 FindTC(file)
+
+T_NTS_base2 = result[0]
+C_NTS_base2 = result[1]
+T_TS_base2 = result[2]
+C_TS_base2 = result[3]
+
+T_NTS_base3 = result2[0]
+C_NTS_base3 = result2[1]
+T_TS_base3 = result2[2]
+C_TS_base3 = result2[3]
 
 file1.close()
 file1a.close()
@@ -925,7 +935,7 @@ sequence6 = GetSequence('chr6.txt')
 print(len(sequence6))
 sequences2.append(sequence6)
 sequence7 = GetSequence('chr7.txt')
-sequences.append(sequence7)
+sequences2.append(sequence7)
 print(len(sequence7))
 sequence8 = GetSequence('chr8.txt')
 sequences2.append(sequence8)
@@ -943,7 +953,7 @@ sequence12 = GetSequence('chr12.txt')
 print(len(sequence12))
 sequences2.append(sequence12)
 sequence13 = GetSequence('chr13.txt')
-sequences.append(sequence13)
+sequences2.append(sequence13)
 print(len(sequence13))
 sequence14 = GetSequence('chr14.txt')
 sequences2.append(sequence14)
@@ -1152,119 +1162,135 @@ print(len(sequence16))
 # print(TS_base2)
                     
         
-with open('lowrpkm_melanocyte01_E059_gencodev10_hg19_sorted.bed') as f4:
-    data5 = f4.read()
-lines5 = [s.strip().split() for s in data5.splitlines()]
-chr5 = []
-pos1_5 = []
-pos2_5 = []
-previous_plus2 = []
-previous_minus2 = []
-strand_data5 = []
-for line in lines5:
-    chr5.append(line[0])
-    pos1_5.append(int(line[1]))
-    pos2_5.append(int(line[2]))
-    strand_data5.append(line[5])
+# with open('lowrpkm_melanocyte01_E059_gencodev10_hg19_sorted.bed') as f4:
+#     data5 = f4.read()
+# lines5 = [s.strip().split() for s in data5.splitlines()]
+# chr5 = []
+# pos1_5 = []
+# pos2_5 = []
+# previous_plus2 = []
+# previous_minus2 = []
+# strand_data5 = []
+# for line in lines5:
+#     chr5.append(line[0])
+#     pos1_5.append(int(line[1]))
+#     pos2_5.append(int(line[2]))
+#     strand_data5.append(line[5])
 
 
 
-TS_base3 = 0
-NTS_base3 = 0
-for x in range (0, len(chr5)):
-    if chr5[x] == 'chrX':
-        sequence = sequences[0]
-    if chr5[x] == 'chr1':
-        sequence = sequences[1]
-    if chr5[x] == 'chr2':
-        sequence = sequences[2]
-    if chr5[x] == 'chr3':
-        sequence = sequences[3]
-    if chr5[x] == 'chr4':
-        sequence = sequences[4]
-    if chr5[x] == 'chr5':
-        sequence = sequences[5]
-    if chr5[x] == 'chr6':
-        sequence = sequences[6]
-    if chr5[x] == 'chr7':
-        sequence = sequences[7]
-    if chr5[x] == 'chr8':
-        sequence = sequences[8]
-    if chr5[x] == 'chr9':
-        sequence = sequences[9]
-    if chr5[x] == 'chr10':
-        sequence = sequences[10]
-    if chr5[x] == 'chr11':
-        sequence = sequences[11]
-    if chr5[x] == 'chr12':
-        sequence = sequences[12]
-    if chr5[x] == 'chr13':
-        sequence = sequences[13]
-    if chr5[x] == 'chr14':
-        sequence = sequences[14]
-    if chr5[x] == 'chr15':
-        sequence = sequences[15]
-    if chr5[x] == 'chr16':
-        sequence = sequences[16]
-    if chr5[x] == 'chr17':
-        sequence = sequences[17]
-    if chr5[x] == 'chr18':
-        sequence = sequences[18]
-    if chr5[x] == 'chr19':
-        sequence = sequences[19]
-    if chr5[x] == 'chr20':
-        sequence = sequences[20]
-    if chr5[x] == 'chr21':
-        sequence = sequences[21]
-    if chr5[x] == 'chr22':
-        sequence = sequences[22]
-    if chr5[x] == 'chrY':
-        sequence = sequences[23]
-    #for i in range(0, (pos2_3[x] - pos1_3[x]) + 1):
-    b = pos1_5[x]
-    while b <= (pos2_5[x]) - 1:
-        #for b in range(0, len(sequence) - 1):
-            polymer_range = {}
-            length = 1
-            if sequence[b] != 'N':# and b not in coordinates:
-                if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
+# TS_base3 = 0
+# NTS_base3 = 0
+# for x in range (0, len(chr5)):
+#     if chr5[x] == 'chrX':
+#         sequence = sequences[0]
+#     if chr5[x] == 'chr1':
+#         sequence = sequences[1]
+#     if chr5[x] == 'chr2':
+#         sequence = sequences[2]
+#     if chr5[x] == 'chr3':
+#         sequence = sequences[3]
+#     if chr5[x] == 'chr4':
+#         sequence = sequences[4]
+#     if chr5[x] == 'chr5':
+#         sequence = sequences[5]
+#     if chr5[x] == 'chr6':
+#         sequence = sequences[6]
+#     if chr5[x] == 'chr7':
+#         sequence = sequences[7]
+#     if chr5[x] == 'chr8':
+#         sequence = sequences[8]
+#     if chr5[x] == 'chr9':
+#         sequence = sequences[9]
+#     if chr5[x] == 'chr10':
+#         sequence = sequences[10]
+#     if chr5[x] == 'chr11':
+#         sequence = sequences[11]
+#     if chr5[x] == 'chr12':
+#         sequence = sequences[12]
+#     if chr5[x] == 'chr13':
+#         sequence = sequences[13]
+#     if chr5[x] == 'chr14':
+#         sequence = sequences[14]
+#     if chr5[x] == 'chr15':
+#         sequence = sequences[15]
+#     if chr5[x] == 'chr16':
+#         sequence = sequences[16]
+#     if chr5[x] == 'chr17':
+#         sequence = sequences[17]
+#     if chr5[x] == 'chr18':
+#         sequence = sequences[18]
+#     if chr5[x] == 'chr19':
+#         sequence = sequences[19]
+#     if chr5[x] == 'chr20':
+#         sequence = sequences[20]
+#     if chr5[x] == 'chr21':
+#         sequence = sequences[21]
+#     if chr5[x] == 'chr22':
+#         sequence = sequences[22]
+#     if chr5[x] == 'chrY':
+#         sequence = sequences[23]
+#     #for i in range(0, (pos2_3[x] - pos1_3[x]) + 1):
+#     b = pos1_5[x]
+#     while b <= (pos2_5[x]) - 1:
+#         #for b in range(0, len(sequence) - 1):
+#             polymer_range = {}
+#             length = 1
+#             if sequence[b] != 'N':# and b not in coordinates:
+#                 if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
 
-                    length = 1
-                    i = 1
-                    polymer_range[0] = b
-                    while sequence[b] == sequence[b + i]:
-                        if (b + i) <= (pos2_5[x]) - 1:
-                            polymer_range[1] = b + i
-                            length = length + 1
-                            i = i + 1
-                        else:
-                            break
+#                     length = 1
+#                     i = 1
+#                     polymer_range[0] = b
+#                     while sequence[b] == sequence[b + i]:
+#                         if (b + i) <= (pos2_5[x]) - 1:
+#                             polymer_range[1] = b + i
+#                             length = length + 1
+#                             i = i + 1
+#                         else:
+#                             break
               
 
-                #if length >= 4:
-                #if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
+#                 #if length >= 4:
+#                 #if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
 
-                    if strand_data5[x] == '+':
-                            if sequence[b] == 'T' or sequence[b] == 'C':
-                                    NTS_base3 = NTS_base3 + length
+#                     if strand_data5[x] == '+':
+#                             if sequence[b] == 'T' or sequence[b] == 'C':
+#                                     NTS_base3 = NTS_base3 + length
                                     
-                            if sequence[b] == 'A' or sequence[b] == 'G':
-                                    TS_base3 = TS_base3 + length
-                            previous_plus2.append((chr5[x], b))
-                    elif strand_data5[x] == '-':
-                            if sequence[b] == 'A' or sequence[b] == 'G':
-                                    NTS_base3 = NTS_base3 + length
-                            if sequence[b] == 'T' or sequence[b] == 'C':
-                                    TS_base3 = TS_base3 + length
-                            previous_minus2.append((chr5[x], b))
+#                             if sequence[b] == 'A' or sequence[b] == 'G':
+#                                     TS_base3 = TS_base3 + length
+#                             previous_plus2.append((chr5[x], b))
+#                     elif strand_data5[x] == '-':
+#                             if sequence[b] == 'A' or sequence[b] == 'G':
+#                                     NTS_base3 = NTS_base3 + length
+#                             if sequence[b] == 'T' or sequence[b] == 'C':
+#                                     TS_base3 = TS_base3 + length
+#                             previous_minus2.append((chr5[x], b))
                 
-                    b = b + length
+#                     b = b + length
 
-                else:
-                    b = b + 1
+#                 else:
+#                     b = b + 1
                  
             
-            else:
-                 b = b + 1
-print(NTS_base3)
-print(TS_base3)
+#             else:
+#                  b = b + 1
+# print(NTS_base3)
+# print(TS_base3)
+
+#Caculates normalized percentages on the NTS and TS based on sequence context
+def FindNormalizedRatio(NTS_count, TS_count, NTS_numbers, TS_numbers):
+    base_ratio = TS_numbers/NTS_numbers
+    mutation_ratio = NTS_count/TS_count
+    ratio = base_ratio * mutation_ratio
+    NTS_percentage = (ratio * 100)/ (ratio + 1)
+    TS_percentage = 100/ (ratio + 1)
+    return NTS_percentage, TS_percentage
+
+
+
+FindNormalizedRatio(low_cutaneous[0], low_cutaneous[2], T_NTS_base2, T_TS_base2)
+FindNormalizedRatio(low_cutaneous[1], low_cutaneous[3], C_NTS_base2, C_TS_base2)
+FindNormalizedRatio (high_cutaneous[0], high_cutaneous[2], T_NTS_base3, T_TS_base3,)
+FindNormalizedRatio( high_cutaneous[1], high_cutaneous[3], C_NTS_base3, C_TS_base3,)
