@@ -391,9 +391,9 @@ def MutationsByIsolate(isolate_list):  #Number of indels or substitutions per is
         sub_number = 0
         for i in range(0, len(isolate_list[key])):
             mutation_number = mutation_number + 1
-            if isolate_list[key][i][5] == 'Deletion' and isolate_list[key][i][7] == 1:
+            if isolate_list[key][i][5] == 'Deletion':#and isolate_list[key][i][7] == 1:
                 indel_number = indel_number + 1
-            if isolate_list[key][i][5] == 'Insertion' and isolate_list[key][i][7] == 1:
+            if isolate_list[key][i][5] == 'Insertion':# and isolate_list[key][i][7] == 1:
                 indel_number = indel_number + 1
             if isolate_list[key][i][5] == 'SNV':
                 sub_number = sub_number + 1
@@ -415,7 +415,7 @@ def IndelRatio(mutation_numbers, indel_numbers):  #fraction of indels for each i
         ratios[key] = indel_numbers[key]/ mutation_numbers[key]
     return ratios
 
-IndelRatio(mutation_numbers, indel_numbers)
+#IndelRatio(mutation_numbers, indel_numbers)
 
 
 def TotalMutationCount(mutation_numbers, indel_numbers): #counts total mutations and indels for each isolate, separated by photolyase treatment group
@@ -594,33 +594,33 @@ def WriteChr(chr_name, file1a, file1b, file1c, file1d,file2a, file2b, file2c, fi
     sorted_chromosome1= sorted(chromosome1)
     #sorted_chromosome1.sort()
     for y in range(0, len(sorted_chromosome1)):
-        file_data.append(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position[chromosome1_dict[sorted_chromosome1[y]]]) - 1) + '\t' + str(position[chromosome1_dict[sorted_chromosome1[y]]]) + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + strand[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + allele[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + isolate[[chromosome1_dict[sorted_chromosome1[fd]]]])
-        for fd in range(0, len(file_data)):
-            if length[chromosome1_dict[sorted_chromosome1[fd]]] == 1 and mutation_type[chromosome1_dict[sorted_chromosome1[fd]]] == 'Deletion':
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in CPD_photolyases.keys():
+        file_data.append(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position[chromosome1_dict[sorted_chromosome1[y]]]) - 1) + '\t' + str(position[chromosome1_dict[sorted_chromosome1[y]]]) + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + strand[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + allele[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + isolate[chromosome1_dict[sorted_chromosome1[y]]])
+    for fd in range(0, len(file_data)):
+            if  mutation_type[chromosome1_dict[sorted_chromosome1[fd]]] == 'Deletion':# and length[chromosome1_dict[sorted_chromosome1[fd]]] == 1 :
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in CPD_photolyases.keys():
                     file1a.write(file_data[fd])
                     file1a.write('\n')
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in photolyase64.keys():
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in photolyase64.keys():
                     file1b.write(file_data[fd]) 
                     file1b.write('\n')
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in both.keys():
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in both.keys():
                     file1c.write(file_data[fd])
                     file1c.write('\n')
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in none.keys():
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in none.keys():
                     file1d.write(file_data[fd]) 
                     file1d.write('\n')
             
-            if length[chromosome1_dict[sorted_chromosome1[fd]]] == 1 and mutation_type[chromosome1_dict[sorted_chromosome1[fd]]] == 'Insertion':
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in CPD_photolyases.keys():
+            if mutation_type[chromosome1_dict[sorted_chromosome1[fd]]] == 'Insertion':# and length[chromosome1_dict[sorted_chromosome1[fd]]] == 1 :
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in CPD_photolyases.keys():
                     file2a.write(file_data[fd])
                     file2a.write('\n')
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in photolyase64.keys():
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in photolyase64.keys():
                     file2b.write(file_data[fd]) 
                     file2b.write('\n')
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in both.keys():
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in both.keys():
                     file2c.write(file_data[fd])
                     file2c.write('\n')
-                if isolate[[chromosome1_dict[sorted_chromosome1[fd]]]] in none.keys():
+                if isolate[chromosome1_dict[sorted_chromosome1[fd]]] in none.keys():
                     file2d.write(file_data[fd]) 
                     file2d.write('\n')
     
@@ -1361,7 +1361,7 @@ def MakeSequenceFile(file1, file2, pentanucleotide, pentanucleotide2, strand, st
                 file2.write(GetComplement(GetReverseComplement(pentanucleotide2[q])))
                 file2.write('\n')
             else:
-                file2.write(pentanucleotide[q])
+                file2.write(pentanucleotide2[q])
                 file2.write('\n')
 
             
@@ -1385,11 +1385,11 @@ def GetPolymerCounts(pentanucleotide,  new_chromosome, new_position, new_isolate
             homopolymers[(new_isolate[i], new_chromosome[i], new_position[i])] = key
             if int(key) >= 4:
                 #homopolymers[(new_isolate[i], new_chromosome[i], new_position[i])] = key
-                #if '-' in new_mutation[i]:
-                if new_mutation[i] == '-':
+                if '-' in new_mutation[i]:
+                #if new_mutation[i] == '-':
                     homopolymer_deletions = homopolymer_deletions + 1
-                #if '-' in new_allele[i]:
-                if new_allele[i] == '-':
+                if '-' in new_allele[i]:
+                #if new_allele[i] == '-':
                     homopolymer_insertions = homopolymer_insertions + 1
                 #homopolymer_list[key[1]] = [(new_chromosome[i], key[0][0], key[0][1])]
                 print(new_trinucleotide[i])
