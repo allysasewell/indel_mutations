@@ -108,14 +108,17 @@ def GetHomopolymerLength(sequence, mut_pos1, mut_pos, mut_position):
             else:
                 flag = False
                
-                if mut_position <= end_position  and mut_position >= end_position - (length - 1 ) or mut_position2 <= end_position  and mut_position2 >= end_position - (length - 1 ):
+                if mut_position <= end_position  and mut_position >= end_position - (length - 1 ):
                      # or [(mut_position2 <= end_position)  and (mut_position2 >= end_position - (length - 1 ))]:
                      lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
+                elif mut_position2 <= end_position  and mut_position2 >= (end_position - (length - 1 )):
+                    lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
     
-        if mut_position <= end_position  and mut_position >= end_position - (length - 1 ) or mut_position2 <= end_position  and mut_position2 >= end_position - (length - 1 ):
+        if mut_position <= end_position  and mut_position >= end_position - (length - 1 ):
     
             lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position) )] = length
-           
+        elif mut_position2 <= end_position  and mut_position2 >= (end_position - (length - 1 )):
+                    lengths[(end_position  + (mut_pos - mut_position) - (length - 1 ) , end_position  + (mut_pos - mut_position))] = length
     if len(lengths) == 0:
         return 1, (mut_pos, mut_pos)
     for key in lengths:
@@ -127,8 +130,9 @@ def GetHomopolymerLength(sequence, mut_pos1, mut_pos, mut_position):
 def GetHomopolymerLengthIns(sequence, mut_pos1, mut_pos, mut_position, strand):
     #mut_position = int(len(sequence)/2) + 1
     mut_position = mut_position 
-    mut_pos1 = int(mut_pos1) #0 base position
+    mut_pos1 = int(mut_pos) - 1 #0 base position
     mut_pos = int(mut_pos) #1 base position 
+   
     end_position = -1
     lengths = {}
     for i in range(0, len(sequence)):
@@ -161,37 +165,42 @@ def GetHomopolymerLengthIns(sequence, mut_pos1, mut_pos, mut_position, strand):
         
 
 
-with open("41467_2023_38255_MOESM5_ESM.csv", 'r', newline = '') as f: #Input whole-genome data as a csv file
-    data = csv.reader(f)
-    header = next(data)
+# with open("41467_2023_38255_MOESM5_ESM.csv", 'r', newline = '') as f: #Input whole-genome data as a csv file
+#     data = csv.reader(f)
+#     header = next(data)
 #lines = [s.strip().split() for s in data.splitlines()]
    
-    genotype = []
-    chromosome = []
-    position = []
-    mutation_type = []
-    length = []
-    allele = []
-    mutation = []
-    frequency = []
-    isolate = []
-    position1 = []
-    isolate_list = {}
-    WT_genotype = []
-    WT_chromosome = []
-    WT_position = []
-    WT_mutation_type = []
-    WT_length = []
-    WT_allele = []
-    WT_mutation = []
-    WT_frequency = []
-    WT_trinucleotide = []
-    WT_strand = []
-    WT_isolate = []
-    WT_position1 = []
-    WT_isolate_list = {}
+genotype = []
+chromosome = []
+position = []
+mutation_type = []
+length = []
+allele = []
+mutation = []
+frequency = []
+isolate = []
+position1 = []
+isolate_list = {}
+WT_genotype = []
+WT_chromosome = []
+WT_position = []
+WT_mutation_type = []
+WT_length = []
+WT_allele = []
+WT_mutation = []
+WT_frequency = []
+WT_trinucleotide = []
+WT_strand = []
+WT_isolate = []
+WT_position1 = []
+WT_isolate_list = {}
 #lines.pop(0)
-    for line in data:
+
+with open("41467_2023_38255_MOESM5_ESM_UVCrad30_tandemnew.txt") as f:
+    data = f.read()
+lines = [s.strip().split() for s in data.splitlines()]
+#for line in data:
+for line in lines:
         if ("rad30" in line[0] or 'Rad30' in line[0]) and line[3] == "15" and line[4] != "Mito":
             isolate.append(line[0])
             if 'XVI' in line[4]:
@@ -232,13 +241,33 @@ with open("41467_2023_38255_MOESM5_ESM.csv", 'r', newline = '') as f: #Input who
 
             mutation_type.append(line[7])
 
-            length.append(int(line[6]))
 
             allele.append(line[8])
 
             mutation.append(line[9])
 
+            length.append(len(line[9]))
+
             position1.append(position[len(position) - 1] - length[len(length) - 1])
+
+
+            # if len(position1) != 0 and isolate[len(isolate) - 1] == isolate[len(isolate) - 2] and chromosome[len(chromosome) - 1] == chromosome[len(chromosome) - 2] and line[7] == 'SNP' and mutation_type[len(mutation_type) - 1] == 'SNP' and int(line[6]) == 1 and length[len(length) - 1] == 1 and (position[len(position) - 1] - length[len(length) - 1]) == position1[len(position1) - 1] + 1:
+            #     isolate.pop()
+            #     chromosome.pop()
+            #     position.pop(len(position) - 2)
+            #     mutation_type.pop()
+            #     mutation_type.pop()
+            #     mutation_type.append("DNP")
+            #     length.pop()
+            #     length.pop()
+            #     length.append(int(2))
+            #     allele[len(allele) - 1] = allele[len(allele) - 1] + line[8]
+            #     allele.pop(len(allele) - 2)
+            #     mutation[len(mutation) - 1] = mutation[len(mutation) - 1] + line[9]
+            #     mutation.pop(len(allele) - 2)
+            
+            # else:
+            #     position1.append(position[len(position) - 1] - length[len(length) - 1])
 
         
         if "WT" in line[1] and line[3] == "15" and line[4] != "Mito":
@@ -282,13 +311,35 @@ with open("41467_2023_38255_MOESM5_ESM.csv", 'r', newline = '') as f: #Input who
 
             WT_mutation_type.append(line[7])
 
-            WT_length.append(int(line[6]))
-
             WT_allele.append(line[8])
 
             WT_mutation.append(line[9])
 
+            WT_length.append(len(line[9]))
+
             WT_position1.append(WT_position[len(WT_position) - 1] - WT_length[len(WT_length) - 1])
+
+
+            # if len(WT_position1) != 0  and WT_isolate[len(WT_isolate) - 1] == WT_isolate[len(WT_isolate) - 2] and WT_chromosome[len(WT_chromosome) - 1] == WT_chromosome[len(WT_chromosome) - 2] and line[7] == 'SNP' and WT_mutation_type[len(WT_mutation_type) - 1] == 'SNP' and int(line[6]) == 1 and WT_length[len(WT_length) - 1] == 1 and (WT_position[len(WT_position) - 1] - WT_length[len(WT_length) - 1]) == WT_position1[len(WT_position1) - 1] + 1:
+            #     WT_isolate.pop()
+            #     WT_chromosome.pop()
+            #     WT_position.pop(len(WT_position) - 2)
+            #     WT_mutation_type.pop()
+            #     WT_mutation_type.pop()
+            #     WT_mutation_type.append("DNP")
+            #     WT_length.pop()
+            #     WT_length.pop()
+            #     WT_length.append(int(2))
+            #     WT_allele[len(WT_allele) - 1] = WT_allele[len(WT_allele) - 1] + line[8]
+            #     WT_allele.pop(len(WT_allele) - 2)
+            #     WT_mutation[len(WT_mutation) - 1] = WT_mutation[len(WT_mutation) - 1] + line[9]
+            #     WT_mutation.pop(len(WT_mutation) - 2)
+            
+            # else:
+            #     WT_position1.append(WT_position[len(WT_position) - 1] - WT_length[len(WT_length) - 1])
+
+
+            
 
 def inputChromosome(position, chromosome): #Find trinucleotide sequence contexts
     trinucleotide = []
@@ -576,6 +627,8 @@ f6 = open("WT_allv2_sorted_tandem.bed", 'w+')
 f7 = open("rad30_allcombinedv2_sorted_tandem.bed", 'w+')
 f8 = open("WT_allcombinedv2_sorted_tandem.bed", 'w+')
 
+#f7 = open("rad30_substitutionsv2_sorted_tandem.bed", 'w+')
+#f8 = open("WT_substitutionsv2_sorted_tandem.bed", 'w+')
 
 #Makes bed files
 def WriteChr(chr_name, file1, file2,  file3, chromosome, position, position1,
@@ -600,14 +653,14 @@ def WriteChr(chr_name, file1, file2,  file3, chromosome, position, position1,
         file_data.append(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position1[chromosome1_dict[sorted_chromosome1[y]]] )) + '\t' + str(position[chromosome1_dict[sorted_chromosome1[y]]]) + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + strand[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + allele[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + isolate[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[y]]])
         #print(chromosome[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + str(int(position1[chromosome1_dict[sorted_chromosome1[y]]]) - 1) + '\t' + position2[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + trinucleotide[chromosome1_dict[sorted_chromosome1[y]]]  + '\t' + mutation[chromosome1_dict[sorted_chromosome1[y]]] + '\t' + mutation_type[chromosome1_dict[sorted_chromosome1[y]]])
     for fd in range(0, len(file_data)):
-        #if '-' in allele[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in mutation[chromosome1_dict[sorted_chromosome1[fd]]]:
+        if '-' in allele[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in mutation[chromosome1_dict[sorted_chromosome1[fd]]]:
             file1.write(file_data[fd])
             file3.write(file_data[fd])
             file1.write('\n')
             file3.write('\n')
             
 
-        #elif '-' in mutation[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in allele[chromosome1_dict[sorted_chromosome1[fd]]]:# and len(trinucleotide[chromosome1_dict[sorted_chromosome1[fd]]]) == 3:
+        elif '-' in mutation[chromosome1_dict[sorted_chromosome1[fd]]] and '-' not in allele[chromosome1_dict[sorted_chromosome1[fd]]]:# and len(trinucleotide[chromosome1_dict[sorted_chromosome1[fd]]]) == 3:
             file2.write(file_data[fd])
             file3.write(file_data[fd])
             file2.write('\n')
@@ -627,12 +680,14 @@ def WriteAllChr(chr_name, file1a, chromosome, position2, position1,
         #if mutation_type[x] == 'SNV' or mutation_type[x] == 'SNP':        
                 #if trinucleotide[x].isalpha():# len(trinucleotide[x]) == 3 and trinucleotide[x].isalpha():
                     if chromosome[x] == chr_name: 
-                        chromosome1_dict[int(position2[x]), isolate[x]] = x
+                        if (int(position2[x]), isolate[x], mutation_type[x]) in chromosome1_dict.keys():
+                            print(int(position2[x]), isolate[x], mutation_type[x])
+                        chromosome1_dict[(int(position2[x]), isolate[x], mutation_type[x])] = x
                 
 
 
     for key1 in chromosome1_dict.keys():
-        chromosome1.append((int(key1[0]), key1[1]))
+        chromosome1.append((int(key1[0]), key1[1], key1[2]))
     sorted_chromosome1= sorted(chromosome1)
     #sorted_chromosome1.sort()
     for y in range(0, len(sorted_chromosome1)):
@@ -1917,7 +1972,7 @@ def GetPolymerCounts(multinucleotide,  new_chromosome, new_position, new_isolate
             
             #elif strand[i] == '-':
                 #key = GetHomopolymerLength(GetReverseComplement(sequence), )[1]
-            homopolymers[(new_isolate[i], new_chromosome[i], new_position[i])] = key
+            homopolymers[(new_isolate[i], new_chromosome[i], new_position[i],new_allele[i] )] = key
             if int(key) >= 4:
                 #homopolymers[(new_isolate[i], new_chromosome[i], new_position[i])] = key
                 if '-' in new_mutation[i]:
@@ -2023,6 +2078,7 @@ homopolymer6 = GetPolymerCounts(homopolymer_data6[0],  homopolymer_data6[2], hom
 homopolymer_data8 = MakeMultiNucFile(c7, c11)
 polymer_counts8 = GetPolymerCounts(homopolymer_data8[0],  homopolymer_data8[2], homopolymer_data8[3], homopolymer_data8[4], homopolymer_data8[5], homopolymer_data8[6], homopolymer_data8[7], homopolymer_data8[8])[0]
 homopolymer8 = GetPolymerCounts(homopolymer_data8[0],  homopolymer_data8[2], homopolymer_data8[3], homopolymer_data8[4], homopolymer_data8[5], homopolymer_data8[6], homopolymer_data8[7], homopolymer_data8[8])[1]
+
 
 
 WT_data = homopolymer_data6
@@ -2407,10 +2463,10 @@ def FindClusters( isolate_list, list2, homopolymers):
                 if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
                 #if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP"):    
                     clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][0])] = [sorted_list[0]]
-                    #total_clusters = total_clusters + 1
-                    #indel_clusters = indel_clusters + 1
-                #elif isolate_list[key][0] not in clusters.keys():
-                    #total_clusters = total_clusters + 1
+            #elif sorted_list[0][7] > 1 and sorted_list[0][1] == sorted_list[1][1] and (int(sorted_list[1][0]) <= int((sorted_list[ 0][0])) + 10):# and (int(sorted_list[1][0]) != int((sorted_list[ 0][0]))):
+                #if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "DIP" or sorted_list[0][5] == "Deletion" or sorted_list[0][5] == "Insertion"):
+                #if (sorted_list[0][6], sorted_list[0][1], sorted_list[0][0]) not in clusters.keys() and (sorted_list[0][5] == "SNV" or sorted_list[0][5] == "SNP"):    
+                    #clusters[(sorted_list[0][6], sorted_list[0][1], sorted_list[0][0])] = [sorted_list[0]]
 
                 if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys() and (sorted_list[1][5] == "DIP" or sorted_list[1][5] == "Deletion" or sorted_list[1][5] == "Insertion"):
                 #if (sorted_list[1][6], sorted_list[1][1], sorted_list[1][0]) not in clusters.keys() and (sorted_list[1][5] == "SNV" or sorted_list[1][5] == "SNP"):
@@ -2604,29 +2660,29 @@ def FindClusters( isolate_list, list2, homopolymers):
     complex_subs = []
     for key in clusters.keys():
         if len(clusters[key][0][8]) == 1:
-            if homopolymers[key] not in homopolymer_subs.keys():
-                homopolymer_subs[homopolymers[key]] = 1
+            if homopolymers[(key[0], key[1], key[2], clusters[key][0][8])] not in homopolymer_subs.keys():
+                homopolymer_subs[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] = 1
             else:
-                homopolymer_subs[homopolymers[key]] = homopolymer_subs[homopolymers[key]] + 1
+                homopolymer_subs[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] = homopolymer_subs[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] + 1
         if '-' in clusters[key][0][3] and len(clusters[key][0][8]) == 1:
-            if homopolymers[key] not in homopolymer_deletions.keys():
-                homopolymer_deletions[homopolymers[key]] = 1
+            if homopolymers[(key[0], key[1], key[2], clusters[key][0][8])] not in homopolymer_deletions.keys():
+                homopolymer_deletions[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] = 1
             else:
-                homopolymer_deletions[homopolymers[key]] = homopolymer_deletions[homopolymers[key]] + 1
+                homopolymer_deletions[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] = homopolymer_deletions[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] + 1
         if '-' not in clusters[key][0][3] and  len(clusters[key][0][3]) == 1:
-            if homopolymers[key] not in homopolymer_insertions.keys():
-                homopolymer_insertions[homopolymers[key]] = 1
+            if homopolymers[(key[0], key[1], key[2], clusters[key][0][8])] not in homopolymer_insertions.keys():
+                homopolymer_insertions[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] = 1
             else:
-                homopolymer_insertions[homopolymers[key]] = homopolymer_insertions[homopolymers[key]] + 1
+                homopolymer_insertions[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] = homopolymer_insertions[homopolymers[(key[0], key[1], key[2], clusters[key][0][8])]] + 1
     for key in homopolymers.keys():
-        if int(homopolymers[key]) >= 4 and key in clusters.keys():
+        if int(homopolymers[(key[0], key[1], key[2], key[3])]) >= 4 and key in clusters.keys():
 
             complex_subs.append(key)
-        if int(homopolymers[key]) >= 4 and key in clusters.keys() and '-' in clusters[key][0][3]:
+        if int(homopolymers[(key[0], key[1], key[2], key[3])]) >= 4 and key in clusters.keys() and '-' in clusters[key][0][3]:
 
             complex_deletions.append(key)
 
-        if int(homopolymers[key]) >= 4 and key in clusters.keys() and '-' not in clusters[key][0][3]:
+        if int(homopolymers[(key[0], key[1], key[2], key[3])]) >= 4 and key in clusters.keys() and '-' not in clusters[key][0][3]:
             complex_insertions.append(key)
     single_insertion = []
     multi_insertion = []
