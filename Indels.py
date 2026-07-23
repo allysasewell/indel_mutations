@@ -109,6 +109,9 @@ def GetHomopolymerLength(sequence, mut_pos1, mut_pos, mut_position):
     mut_pos = int(mut_pos) #1 index position on chromosome
     difference = mut_pos - mut_pos1 - 1
     mut_position2 = mut_position + difference
+    if difference > 0:
+        print(difference)
+        print(sequence[mut_position - 1:mut_position2])
     
 
     end_position = -1
@@ -147,7 +150,7 @@ def GetHomopolymerLength(sequence, mut_pos1, mut_pos, mut_position):
 def GetHomopolymerLengthIns(sequence, mut_pos1, mut_pos, mut_position, strand):
     #mut_position = int(len(sequence)/2) + 1
     mut_position = mut_position 
-    mut_pos1 = int(mut_pos1) #0 index position on chromosome
+    mut_pos1 = int(mut_pos) - 1 #0 index position on chromosome
     mut_pos = int(mut_pos) #1 index position on chromosome
     end_position = -1
     lengths = {}
@@ -179,7 +182,7 @@ def GetHomopolymerLengthIns(sequence, mut_pos1, mut_pos, mut_position, strand):
 
 
 
-with open("UVC_filter_mutations.txt") as f: #Input UVC whole-genome sequencing data
+with open("UV_yeast_Merged_SNP_DIPs_sorted_anz2_filter_tandemnew.txt") as f: #Input UVC whole-genome sequencing data
     data = f.read()
 lines = [s.strip().split() for s in data.splitlines()]
 genotypes = {'WT': 0, 'rad16':0, 'rad26':0, 'rad30': 0}
