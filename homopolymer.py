@@ -159,7 +159,7 @@ def GetHomopolymerLengthIns(sequence, mut_pos1, mut_pos, mut_position, strand):
 
 
 #with open("UV_yeast_Merged_SNP_DIPs_sorted_anz2_tandem.txt") as f:
-with open("UVC_filter_mutations.txt") as f:
+with open("UV_yeast_Merged_SNP_DIPs_sorted_anz2_filter_tandemnew.txt") as f:
     data = f.read()
 lines = [s.strip().split() for s in data.splitlines()]
 genotypes = {'WT': 0, 'rad16':0, 'rad26':0, 'rad30': 0}
