@@ -378,7 +378,7 @@ def FindAsymmetry(file, chromosome, position1, position2, trinucleotide, strand,
                 file.write(chromosome[po] + '\t' + str(position1[po]) + '\t' + str(position2[po]) + '\t' + trinucleotide[po] + '\t' + mutation[po] + '\t' + strand[po])
                 file.write('\n')
         #Falls between genes
-            elif position2[po] > pos2[p2 - 1] and position2[po] <= pos1[p2 - 1] and chromosome[po] == chr[p2 - 1]:
+            elif position2[po] > pos2[p2 - 1] and position2[po] <= pos1[p2] and chromosome[po] == chr[p2 - 1] and p2 < len(pos1):
                 intergenic.append([chromosome[po], position1[po], position2[po], trinucleotide[po], strand[po]])
                 intergenic_count = intergenic_count + 1
                 po = po + 1
@@ -1055,109 +1055,125 @@ print(len(sequence16))
 # print(TS_base)
 
 
-# with open('highrpkm_melanocyte01_E059_gencodev10_hg19_sorted_name_noverlap.bed') as f3:
-#     data4 = f3.read()
-# lines4 = [s.strip().split() for s in data4.splitlines()]
-# chr4 = []
-# pos1_4 = []
-# pos2_4 = []
-# strand_data4 = []
-# for line in lines4:
-#     chr4.append(line[0])
-#     pos1_4.append(int(line[1]))
-#     pos2_4.append(int(line[2]))
-#     strand_data4.append(line[5])
+with open('highrpkm_melanocyte01_E059_gencodev10_hg19_sorted_name_noverlap.bed') as f3:
+    data4 = f3.read()
+lines4 = [s.strip().split() for s in data4.splitlines()]
+chr4 = []
+pos1_4 = []
+pos2_4 = []
+strand_data4 = []
+for line in lines4:
+    chr4.append(line[0])
+    pos1_4.append(int(line[1]))
+    pos2_4.append(int(line[2]))
+    strand_data4.append(line[5])
 
 
 
-# TS_base2 = 0
-# NTS_base2 = 0
-# for x in range (0, len(chr4)):
-#     if chr4[x] == 'chrX':
-#         sequence = sequences[0]
-#     if chr4[x] == 'chr1':
-#         sequence = sequences[1]
-#     if chr4[x] == 'chr2':
-#         sequence = sequences[2]
-#     if chr4[x] == 'chr3':
-#         sequence = sequences[3]
-#     if chr4[x] == 'chr4':
-#         sequence = sequences[4]
-#     if chr4[x] == 'chr5':
-#         sequence = sequences[5]
-#     if chr4[x] == 'chr6':
-#         sequence = sequences[6]
-#     if chr4[x] == 'chr7':
-#         sequence = sequences[7]
-#     if chr4[x] == 'chr8':
-#         sequence = sequences[8]
-#     if chr4[x] == 'chr9':
-#         sequence = sequences[9]
-#     if chr4[x] == 'chr10':
-#         sequence = sequences[10]
-#     if chr4[x] == 'chr11':
-#         sequence = sequences[11]
-#     if chr4[x] == 'chr12':
-#         sequence = sequences[12]
-#     if chr4[x] == 'chr13':
-#         sequence = sequences[13]
-#     if chr4[x] == 'chr14':
-#         sequence = sequences[14]
-#     if chr4[x] == 'chr15':
-#         sequence = sequences[15]
-#     if chr4[x] == 'chr16':
-#         sequence = sequences[16]
-#     if chr4[x] == 'chr17':
-#         sequence = sequences[17]
-#     if chr4[x] == 'chr18':
-#         sequence = sequences[18]
-#     if chr4[x] == 'chr19':
-#         sequence = sequences[19]
-#     if chr4[x] == 'chr20':
-#         sequence = sequences[20]
-#     if chr4[x] == 'chr21':
-#         sequence = sequences[21]
-#     if chr4[x] == 'chr22':
-#         sequence = sequences[22]
-#     if chr4[x] == 'chrY':
-#         sequence = sequences[23]
-#     #for i in range(0, (pos2_3[x] - pos1_3[x]) + 1):
-#     b = pos1_4[x]
-#     while b <= (pos2_4[x]) - 1:
-#         #for b in range(0, len(sequence) - 1):
-#             polymer_range = {}
-#             length = 1
-#             if sequence[b] != 'N':# and b not in coordinates:
-#                 length = 1
-#                 i = 1
-#                 polymer_range[0] = b
+TS_base2_T = 0
+NTS_base2_T = 0
+TS_base2_C = 0
+NTS_base2_C = 0
+for x in range (0, len(chr4)):
+    if chr4[x] == 'chrX':
+        sequence = sequences[0]
+    if chr4[x] == 'chr1':
+        sequence = sequences[1]
+    if chr4[x] == 'chr2':
+        sequence = sequences[2]
+    if chr4[x] == 'chr3':
+        sequence = sequences[3]
+    if chr4[x] == 'chr4':
+        sequence = sequences[4]
+    if chr4[x] == 'chr5':
+        sequence = sequences[5]
+    if chr4[x] == 'chr6':
+        sequence = sequences[6]
+    if chr4[x] == 'chr7':
+        sequence = sequences[7]
+    if chr4[x] == 'chr8':
+        sequence = sequences[8]
+    if chr4[x] == 'chr9':
+        sequence = sequences[9]
+    if chr4[x] == 'chr10':
+        sequence = sequences[10]
+    if chr4[x] == 'chr11':
+        sequence = sequences[11]
+    if chr4[x] == 'chr12':
+        sequence = sequences[12]
+    if chr4[x] == 'chr13':
+        sequence = sequences[13]
+    if chr4[x] == 'chr14':
+        sequence = sequences[14]
+    if chr4[x] == 'chr15':
+        sequence = sequences[15]
+    if chr4[x] == 'chr16':
+        sequence = sequences[16]
+    if chr4[x] == 'chr17':
+        sequence = sequences[17]
+    if chr4[x] == 'chr18':
+        sequence = sequences[18]
+    if chr4[x] == 'chr19':
+        sequence = sequences[19]
+    if chr4[x] == 'chr20':
+        sequence = sequences[20]
+    if chr4[x] == 'chr21':
+        sequence = sequences[21]
+    if chr4[x] == 'chr22':
+        sequence = sequences[22]
+    if chr4[x] == 'chrY':
+        sequence = sequences[23]
+    #for i in range(0, (pos2_3[x] - pos1_3[x]) + 1):
+    b = pos1_4[x]
+    while b <= (pos2_4[x]) - 1:
+        #for b in range(0, len(sequence) - 1):
+            polymer_range = {}
+            length = 1
+            if sequence[b] != 'N':# and b not in coordinates:
+                length = 1
+                i = 1
+                polymer_range[0] = b
                
-#                 while sequence[b] == sequence[b + i]:
-#                     if (b + i) < (pos2_4[x]) - 1:
-#                         polymer_range[1] = b + i
-#                         length = length + 1
-#                         i = i + 1
-#                     else:
-#                         break
+                while sequence[b] == sequence[b + i]:
+                    if (b + i) < (pos2_4[x]) - 1:
+                        polymer_range[1] = b + i
+                        length = length + 1
+                        i = i + 1
+                    else:
+                        break
                   
 
-#                 if length >= 4:
+                if length >= 4:
                 
-#                     if strand_data4[x] == '+':
-#                             if sequence[b] == 'T' or sequence[b] == 'C':
-#                                     NTS_base2 = NTS_base2 + length
-                                    
-#                             if sequence[b] == 'A' or sequence[b] == 'G':
-#                                     TS_base2 = TS_base2 + length
-#                     elif strand_data4[x] == '-':
-#                             if sequence[b] == 'A' or sequence[b] == 'G':
-#                                     NTS_base2 = NTS_base2 + length
-#                             if sequence[b] == 'T' or sequence[b] == 'C':
-#                                     TS_base2 = TS_base2 + length
+                    if strand_data4[x] == '+':
+                                if sequence[b] == 'T':# or sequence[b] == 'C':
+                                    NTS_base2_T = NTS_base2_T + length
+                                if sequence[b] == 'C':
+                                    NTS_base2_C = NTS_base2_C + length
+                                if sequence[b] == 'A':# or sequence[b] == 'C':
+                                    TS_base2_T = TS_base2_T + length
+                                elif sequence[b] == 'G':
+                                    TS_base2_C = TS_base2_C + length
+                                        
+                                # if sequence[b] == 'A' or sequence[b] == 'G':
+                                #         TS_base2 = TS_base2 + length
+                    elif strand_data4[x] == '-':
+                                # if sequence[b] == 'A' or sequence[b] == 'G':
+                                #         NTS_base2 = NTS_base2 + length
+                                # if sequence[b] == 'T' or sequence[b] == 'C':
+                                #         TS_base2 = TS_base2 + length
+                                if sequence[b] == 'T':# or sequence[b] == 'C':
+                                    TS_base2_T = TS_base2_T + length
+                                if sequence[b] == 'C':
+                                    TS_base2_C = TS_base2_C + length
+                                if sequence[b] == 'A':# or sequence[b] == 'C':
+                                    NTS_base2_T = NTS_base2_T + length
+                                elif sequence[b] == 'G':
+                                    NTS_base2_C = NTS_base2_C + length
             
-#                 b = b + length
-#             else:
-#                  b = b + 1
+                b = b + length
+            else:
+                 b = b + 1
 # print(NTS_base2)
 # print(TS_base2)
                     
@@ -1292,5 +1308,13 @@ def FindNormalizedRatio(NTS_count, TS_count, NTS_numbers, TS_numbers):
 
 FindNormalizedRatio(low_cutaneous[0], low_cutaneous[2], T_NTS_base2, T_TS_base2)
 FindNormalizedRatio(low_cutaneous[1], low_cutaneous[3], C_NTS_base2, C_TS_base2)
-FindNormalizedRatio (high_cutaneous[0], high_cutaneous[2], T_NTS_base3, T_TS_base3,)
-FindNormalizedRatio( high_cutaneous[1], high_cutaneous[3], C_NTS_base3, C_TS_base3,)
+FindNormalizedRatio (high_cutaneous[0], high_cutaneous[2], T_NTS_base3, T_TS_base3)
+FindNormalizedRatio( high_cutaneous[1], high_cutaneous[3], C_NTS_base3, C_TS_base3)                                         
+
+
+FindNormalizedRatio (high_cutaneous_homopolymer[0] +high_cutaneous_homopolymer[1] + high_cutaneous_homopolymer2[0] +high_cutaneous_homopolymer2[1], high_cutaneous_homopolymer[2] +high_cutaneous_homopolymer[3] + high_cutaneous_homopolymer2[2] +high_cutaneous_homopolymer2[3],NTS_base2_T + NTS_base2_C,TS_base2_T + TS_base2_C)
+
+
+FindNormalizedRatio (high_cutaneous_homopolymer[0] + high_cutaneous_homopolymer2[0], high_cutaneous_homopolymer[2] + high_cutaneous_homopolymer2[2],NTS_base2_T,TS_base2_T)
+
+FindNormalizedRatio (high_cutaneous_homopolymer[1] + high_cutaneous_homopolymer2[1], high_cutaneous_homopolymer[3] +high_cutaneous_homopolymer2[3],NTS_base2_C,TS_base2_C)
