@@ -378,7 +378,7 @@ def FindAsymmetry(file, chromosome, position1, position2, trinucleotide, strand,
                 file.write(chromosome[po] + '\t' + str(position1[po]) + '\t' + str(position2[po]) + '\t' + trinucleotide[po] + '\t' + mutation[po] + '\t' + strand[po])
                 file.write('\n')
         #Falls between genes
-            elif position2[po] > pos2[p2 - 1] and position2[po] <= pos1[p2] and chromosome[po] == chr[p2 - 1] and p2 < len(pos1):
+            elif p2 < len(pos1) and position2[po] > pos2[p2 - 1] and position2[po] <= pos1[p2] and chromosome[po] == chr[p2 - 1]:
                 intergenic.append([chromosome[po], position1[po], position2[po], trinucleotide[po], strand[po]])
                 intergenic_count = intergenic_count + 1
                 po = po + 1
@@ -1143,9 +1143,9 @@ for x in range (0, len(chr4)):
                         break
                   
 
-                if length >= 4:
+                #if length >= 4:
                 
-                    if strand_data4[x] == '+':
+                if strand_data4[x] == '+':
                                 if sequence[b] == 'T':# or sequence[b] == 'C':
                                     NTS_base2_T = NTS_base2_T + length
                                 if sequence[b] == 'C':
@@ -1157,7 +1157,7 @@ for x in range (0, len(chr4)):
                                         
                                 # if sequence[b] == 'A' or sequence[b] == 'G':
                                 #         TS_base2 = TS_base2 + length
-                    elif strand_data4[x] == '-':
+                elif strand_data4[x] == '-':
                                 # if sequence[b] == 'A' or sequence[b] == 'G':
                                 #         NTS_base2 = NTS_base2 + length
                                 # if sequence[b] == 'T' or sequence[b] == 'C':
