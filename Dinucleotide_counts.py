@@ -31,19 +31,27 @@ def DinucleotideContext(file, di_dict):
     for i in range(1, len(sequence) - 1):
         if 'CC' in sequence[i-1:i+2] or 'CT' in sequence[i-1:i+2] or 'TC' in sequence[i-1:i+2] or 'TT' in sequence[i-1:i+2] or 'AA' in sequence[i-1:i+2] or  'AG' in sequence[i-1:i+2] or 'GA' in sequence[i-1:i+2] or 'GG' in sequence[i-1:i+2]:
             di_dict[0] = di_dict[0] + 1
-            if sequence[i-1:i+2][1] == 'C' or sequence[i-1:i+2][1] == 'G':
-                di_dict[2] = di_dict[2] + 1
-            else:
-                di_dict[4] = di_dict[4] + 1
+            # if sequence[i-1:i+1][1] == 'C' or sequence[i-1:i+1][1] == 'G':
+            #     di_dict[2] = di_dict[2] + 1
+            # else:
+            #     di_dict[4] = di_dict[4] + 1
 
         else:
             di_dict[1] = di_dict[1] + 1
-            if sequence[i-1:i+2][1] == 'C' or sequence[i-1:i+2][1] == 'G':
-                di_dict[3] = di_dict[3] + 1
-            else:
-                di_dict[5] = di_dict[5] + 1
+            # if sequence[i-1:i+2][1] == 'C' or sequence[i-1:i+2][1] == 'G':
+            #     di_dict[3] = di_dict[3] + 1
+            # else:
+            #     di_dict[5] = di_dict[5] + 1
     
        
+    if sequence[0:2] == 'CC' or sequence[0:2] == 'CT' or sequence[0:2] == 'TC' or sequence[0:2] == 'TT' or sequence[0:2] == 'AA' or sequence[0:2] == 'AG' or sequence[0:2] == 'GA' or sequence[0:2] == 'GG':
+            di_dict[0] = di_dict[0] + 1
+    else:
+            di_dict[1] = di_dict[1] + 1
+    if sequence[len(sequence) - 2:len(sequence)] == 'CC' or sequence[len(sequence) - 2:len(sequence)] == 'CT' or sequence[len(sequence) - 2:len(sequence)] == 'TC' or sequence[len(sequence) - 2:len(sequence)] == 'TT' or sequence[len(sequence) - 2:len(sequence)] == 'AA' or sequence[len(sequence) - 2:len(sequence)] == 'AG' or sequence[len(sequence) - 2:len(sequence)] == 'GA' or sequence[len(sequence) - 2:len(sequence)] == 'GG':
+                di_dict[0] = di_dict[0] + 1
+    else:
+                di_dict[1] = di_dict[1] + 1
         
 
 
@@ -72,7 +80,7 @@ def CountTotals(trinuc_counts):
     dipyrimidine_count = 0
     nondipyrimidine_count = 0
     for key in trinuc_counts.keys():
-        if 'TT' in key or 'TC' in key or 'CT' in key or 'CC' in key:
+        if 'TT' in key or 'TC' in key or 'CT' in key or 'CC' in key or 'AA' in key or 'AG' in key or 'GA' in key or 'GG' in key:
             dipyrimidine_count = dipyrimidine_count + int(trinuc_counts[key])
         else:
             nondipyrimidine_count = nondipyrimidine_count + int(trinuc_counts[key])
@@ -186,6 +194,19 @@ sequenceY = GetSequence('hg19.fa', 'chrY')
 sequences.append(sequenceY)
 print(len(sequenceY))
 
+# count = 0
+# sequence_num = 0
+# for sequence in sequences:
+#      sequence_num = sequence_num + 1
+#      for i in range(0, len(sequence)):
+#           if sequence[i] != 'N':
+#                count = count + 1
+# print(count)
+
+
+
+     
+
 #Counts bases in dipyrimidine and non-dipyrimidine sequence contexts in the human genome
 def DinucleotideContext2(sequences):
     dipyrimidine = 0
@@ -199,19 +220,36 @@ def DinucleotideContext2(sequences):
        
     
         for i in range(1, len(sequence) - 1):
-            if 'CC' in sequence[i-1:i+2] or 'CT' in sequence[i-1:i+2] or 'TC' in sequence[i-1:i+2] or 'TT' in sequence[i-1:i+2] or 'AA' in sequence[i-1:i+2] or  'AG' in sequence[i-1:i+2] or 'GA' in sequence[i-1:i+2] or 'GG' in sequence[i-1:i+2]:
-                dipyrimidine = dipyrimidine + 1
-                if sequence[i-1:i+2][1] == 'G' or sequence[i-1:i+2][1] == 'C':
-                    C_dipyrimidine = C_dipyrimidine + 1
-                else:
-                    T_dipyrimidine = T_dipyrimidine + 1
+            if sequence[i]!= 'N' and (sequence[i-1] != 'N' or sequence[i+1] != 'N'):
+                if 'CC' in sequence[i-1:i+2] or 'CT' in sequence[i-1:i+2] or 'TC' in sequence[i-1:i+2] or 'TT' in sequence[i-1:i+2] or 'AA' in sequence[i-1:i+2] or  'AG' in sequence[i-1:i+2] or 'GA' in sequence[i-1:i+2] or 'GG' in sequence[i-1:i+2]:
+                    dipyrimidine = dipyrimidine + 1
+                # if sequence[i-1:i+2][1] == 'G' or sequence[i-1:i+2][1] == 'C':
+                #     C_dipyrimidine = C_dipyrimidine + 1
+                # else:
+                #     T_dipyrimidine = T_dipyrimidine + 1
 
-            else:
-                non_dipyrimidine = non_dipyrimidine + 1
-                if sequence[i-1:i+2][1] == 'G' or sequence[i-1:i+2][1] == 'C':
-                    C_nondipyrimidine = C_nondipyrimidine + 1
                 else:
-                    T_nondipyrimidine = T_nondipyrimidine + 1
+                    non_dipyrimidine = non_dipyrimidine + 1
+
+        if sequence[0] != 'N' and sequence[1] != 'N':
+                    if sequence[0:2] == 'CC' or sequence[0:2] == 'CT' or sequence[0:2] == 'TC' or sequence[0:2] == 'TT' or sequence[0:2] == 'AA' or sequence[0:2] == 'AG' or sequence[0:2] == 'GA' or sequence[0:2] == 'GG':
+                        dipyrimidine += 1
+                    else:
+                        non_dipyrimidine += 1
+
+        if sequence[len(sequence) - 1]!= 'N' and sequence[len(sequence) - 2]!= 'N':
+                    if sequence[len(sequence) - 2:len(sequence)] == 'CC' or sequence[len(sequence) - 2:len(sequence)] == 'CT' or sequence[len(sequence) - 2:len(sequence)] == 'TC' or sequence[len(sequence) - 2:len(sequence)] == 'TT' or sequence[len(sequence) - 2:len(sequence)] == 'AA' or sequence[len(sequence) - 2:len(sequence)] == 'AG' or sequence[len(sequence) - 2:len(sequence)] == 'GA' or sequence[len(sequence) - 2:len(sequence)] == 'GG':
+                        dipyrimidine += 1
+                    else:
+                        non_dipyrimidine += 1
+        
+
+
+            
+                # if sequence[i-1:i+2][1] == 'G' or sequence[i-1:i+2][1] == 'C':
+                #     C_nondipyrimidine = C_nondipyrimidine + 1
+                # else:
+                #     T_nondipyrimidine = T_nondipyrimidine + 1
 
         
 
