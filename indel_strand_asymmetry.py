@@ -1,6 +1,7 @@
 
 
 
+
 def GetReverseComplement(str):
     if str == 'NA':
         return 
@@ -1143,33 +1144,33 @@ for x in range (0, len(chr4)):
                         break
                   
 
-                #if length >= 4:
+                if length >= 4:
                 
-                if strand_data4[x] == '+':
-                                if sequence[b] == 'T':# or sequence[b] == 'C':
-                                    NTS_base2_T = NTS_base2_T + length
-                                if sequence[b] == 'C':
-                                    NTS_base2_C = NTS_base2_C + length
-                                if sequence[b] == 'A':# or sequence[b] == 'C':
-                                    TS_base2_T = TS_base2_T + length
-                                elif sequence[b] == 'G':
-                                    TS_base2_C = TS_base2_C + length
-                                        
-                                # if sequence[b] == 'A' or sequence[b] == 'G':
-                                #         TS_base2 = TS_base2 + length
-                elif strand_data4[x] == '-':
-                                # if sequence[b] == 'A' or sequence[b] == 'G':
-                                #         NTS_base2 = NTS_base2 + length
-                                # if sequence[b] == 'T' or sequence[b] == 'C':
-                                #         TS_base2 = TS_base2 + length
-                                if sequence[b] == 'T':# or sequence[b] == 'C':
-                                    TS_base2_T = TS_base2_T + length
-                                if sequence[b] == 'C':
-                                    TS_base2_C = TS_base2_C + length
-                                if sequence[b] == 'A':# or sequence[b] == 'C':
-                                    NTS_base2_T = NTS_base2_T + length
-                                elif sequence[b] == 'G':
-                                    NTS_base2_C = NTS_base2_C + length
+                    if strand_data4[x] == '+':
+                                    if sequence[b] == 'T':# or sequence[b] == 'C':
+                                        NTS_base2_T = NTS_base2_T + length
+                                    if sequence[b] == 'C':
+                                        NTS_base2_C = NTS_base2_C + length
+                                    if sequence[b] == 'A':# or sequence[b] == 'C':
+                                        TS_base2_T = TS_base2_T + length
+                                    elif sequence[b] == 'G':
+                                        TS_base2_C = TS_base2_C + length
+                                            
+                                    # if sequence[b] == 'A' or sequence[b] == 'G':
+                                    #         TS_base2 = TS_base2 + length
+                    elif strand_data4[x] == '-':
+                                    # if sequence[b] == 'A' or sequence[b] == 'G':
+                                    #         NTS_base2 = NTS_base2 + length
+                                    # if sequence[b] == 'T' or sequence[b] == 'C':
+                                    #         TS_base2 = TS_base2 + length
+                                    if sequence[b] == 'T':# or sequence[b] == 'C':
+                                        TS_base2_T = TS_base2_T + length
+                                    if sequence[b] == 'C':
+                                        TS_base2_C = TS_base2_C + length
+                                    if sequence[b] == 'A':# or sequence[b] == 'C':
+                                        NTS_base2_T = NTS_base2_T + length
+                                    elif sequence[b] == 'G':
+                                        NTS_base2_C = NTS_base2_C + length
             
                 b = b + length
             else:
@@ -1178,124 +1179,133 @@ for x in range (0, len(chr4)):
 # print(TS_base2)
                     
         
-# with open('lowrpkm_melanocyte01_E059_gencodev10_hg19_sorted.bed') as f4:
-#     data5 = f4.read()
-# lines5 = [s.strip().split() for s in data5.splitlines()]
-# chr5 = []
-# pos1_5 = []
-# pos2_5 = []
-# previous_plus2 = []
-# previous_minus2 = []
-# strand_data5 = []
-# for line in lines5:
-#     chr5.append(line[0])
-#     pos1_5.append(int(line[1]))
-#     pos2_5.append(int(line[2]))
-#     strand_data5.append(line[5])
+with open('lowrpkm_melanocyte01_E059_gencodev10_hg19_sorted.bed') as f4:
+    data5 = f4.read()
+lines5 = [s.strip().split() for s in data5.splitlines()]
+chr5 = []
+pos1_5 = []
+pos2_5 = []
+previous_plus2 = []
+previous_minus2 = []
+strand_data5 = []
+for line in lines5:
+    chr5.append(line[0])
+    pos1_5.append(int(line[1]))
+    pos2_5.append(int(line[2]))
+    strand_data5.append(line[5])
 
 
 
-# TS_base3 = 0
-# NTS_base3 = 0
-# for x in range (0, len(chr5)):
-#     if chr5[x] == 'chrX':
-#         sequence = sequences[0]
-#     if chr5[x] == 'chr1':
-#         sequence = sequences[1]
-#     if chr5[x] == 'chr2':
-#         sequence = sequences[2]
-#     if chr5[x] == 'chr3':
-#         sequence = sequences[3]
-#     if chr5[x] == 'chr4':
-#         sequence = sequences[4]
-#     if chr5[x] == 'chr5':
-#         sequence = sequences[5]
-#     if chr5[x] == 'chr6':
-#         sequence = sequences[6]
-#     if chr5[x] == 'chr7':
-#         sequence = sequences[7]
-#     if chr5[x] == 'chr8':
-#         sequence = sequences[8]
-#     if chr5[x] == 'chr9':
-#         sequence = sequences[9]
-#     if chr5[x] == 'chr10':
-#         sequence = sequences[10]
-#     if chr5[x] == 'chr11':
-#         sequence = sequences[11]
-#     if chr5[x] == 'chr12':
-#         sequence = sequences[12]
-#     if chr5[x] == 'chr13':
-#         sequence = sequences[13]
-#     if chr5[x] == 'chr14':
-#         sequence = sequences[14]
-#     if chr5[x] == 'chr15':
-#         sequence = sequences[15]
-#     if chr5[x] == 'chr16':
-#         sequence = sequences[16]
-#     if chr5[x] == 'chr17':
-#         sequence = sequences[17]
-#     if chr5[x] == 'chr18':
-#         sequence = sequences[18]
-#     if chr5[x] == 'chr19':
-#         sequence = sequences[19]
-#     if chr5[x] == 'chr20':
-#         sequence = sequences[20]
-#     if chr5[x] == 'chr21':
-#         sequence = sequences[21]
-#     if chr5[x] == 'chr22':
-#         sequence = sequences[22]
-#     if chr5[x] == 'chrY':
-#         sequence = sequences[23]
-#     #for i in range(0, (pos2_3[x] - pos1_3[x]) + 1):
-#     b = pos1_5[x]
-#     while b <= (pos2_5[x]) - 1:
-#         #for b in range(0, len(sequence) - 1):
-#             polymer_range = {}
-#             length = 1
-#             if sequence[b] != 'N':# and b not in coordinates:
-#                 if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
+TS_base3_T = 0
+NTS_base3_T = 0
+TS_base3_C = 0
+NTS_base3_C = 0
+for x in range (0, len(chr5)):
+    if chr5[x] == 'chrX':
+        sequence = sequences[0]
+    if chr5[x] == 'chr1':
+        sequence = sequences[1]
+    if chr5[x] == 'chr2':
+        sequence = sequences[2]
+    if chr5[x] == 'chr3':
+        sequence = sequences[3]
+    if chr5[x] == 'chr4':
+        sequence = sequences[4]
+    if chr5[x] == 'chr5':
+        sequence = sequences[5]
+    if chr5[x] == 'chr6':
+        sequence = sequences[6]
+    if chr5[x] == 'chr7':
+        sequence = sequences[7]
+    if chr5[x] == 'chr8':
+        sequence = sequences[8]
+    if chr5[x] == 'chr9':
+        sequence = sequences[9]
+    if chr5[x] == 'chr10':
+        sequence = sequences[10]
+    if chr5[x] == 'chr11':
+        sequence = sequences[11]
+    if chr5[x] == 'chr12':
+        sequence = sequences[12]
+    if chr5[x] == 'chr13':
+        sequence = sequences[13]
+    if chr5[x] == 'chr14':
+        sequence = sequences[14]
+    if chr5[x] == 'chr15':
+        sequence = sequences[15]
+    if chr5[x] == 'chr16':
+        sequence = sequences[16]
+    if chr5[x] == 'chr17':
+        sequence = sequences[17]
+    if chr5[x] == 'chr18':
+        sequence = sequences[18]
+    if chr5[x] == 'chr19':
+        sequence = sequences[19]
+    if chr5[x] == 'chr20':
+        sequence = sequences[20]
+    if chr5[x] == 'chr21':
+        sequence = sequences[21]
+    if chr5[x] == 'chr22':
+        sequence = sequences[22]
+    if chr5[x] == 'chrY':
+        sequence = sequences[23]
+    #for i in range(0, (pos2_3[x] - pos1_3[x]) + 1):
+    b = pos1_5[x]
+    while b <= (pos2_5[x]) - 1:
+        #for b in range(0, len(sequence) - 1):
+            polymer_range = {}
+            length = 1
+            if sequence[b] != 'N':# and b not in coordinates:
+                if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
 
-#                     length = 1
-#                     i = 1
-#                     polymer_range[0] = b
-#                     while sequence[b] == sequence[b + i]:
-#                         if (b + i) <= (pos2_5[x]) - 1:
-#                             polymer_range[1] = b + i
-#                             length = length + 1
-#                             i = i + 1
-#                         else:
-#                             break
+                
+                    length = 1
+                    i = 1
+                    polymer_range[0] = b
+                    while sequence[b] == sequence[b + i]:
+                        if (b + i) <= (pos2_5[x]) - 1:
+                            polymer_range[1] = b + i
+                            length = length + 1
+                            i = i + 1
+                        else:
+                            break
               
 
-#                 #if length >= 4:
-#                 #if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
+                    if length >= 4:
+                #if (chr5[x], b) not in previous_plus2 and (chr5[x], b) not in previous_minus2:
 
-#                     if strand_data5[x] == '+':
-#                             if sequence[b] == 'T' or sequence[b] == 'C':
-#                                     NTS_base3 = NTS_base3 + length
-                                    
-#                             if sequence[b] == 'A' or sequence[b] == 'G':
-#                                     TS_base3 = TS_base3 + length
-#                             previous_plus2.append((chr5[x], b))
-#                     elif strand_data5[x] == '-':
-#                             if sequence[b] == 'A' or sequence[b] == 'G':
-#                                     NTS_base3 = NTS_base3 + length
-#                             if sequence[b] == 'T' or sequence[b] == 'C':
-#                                     TS_base3 = TS_base3 + length
-#                             previous_minus2.append((chr5[x], b))
-                
-#                     b = b + length
+                        if strand_data5[x] == '+':
+                                if sequence[b] == 'T':# or sequence[b] == 'C':
+                                    NTS_base3_T = NTS_base3_T + length
+                                if sequence[b] == 'C':
+                                    NTS_base3_C = NTS_base3_C + length
+                                if sequence[b] == 'A':# or sequence[b] == 'C':
+                                    TS_base3_T = TS_base3_T + length
+                                elif sequence[b] == 'G':
+                                    TS_base3_C = TS_base3_C + length
+                            
+                        elif strand_data5[x] == '-':
+                            if sequence[b] == 'T':# or sequence[b] == 'C':
+                                    TS_base3_T = TS_base3_T + length
+                            if sequence[b] == 'C':
+                                TS_base3_C = TS_base3_C + length
+                            if sequence[b] == 'A':# or sequence[b] == 'C':
+                                NTS_base3_T = NTS_base3_T + length
+                            elif sequence[b] == 'G':
+                                NTS_base3_C = NTS_base3_C + length
+            
+                    b = b + length
 
-#                 else:
-#                     b = b + 1
+                else:
+                    b = b + 1
                  
             
-#             else:
-#                  b = b + 1
+            else:
+                 b = b + 1
 # print(NTS_base3)
 # print(TS_base3)
 
-#Caculates normalized percentages on the NTS and TS based on sequence context
+#Calculates normalized percentages on the NTS and TS based on sequence context
 def FindNormalizedRatio(NTS_count, TS_count, NTS_numbers, TS_numbers):
     base_ratio = TS_numbers/NTS_numbers
     mutation_ratio = NTS_count/TS_count
@@ -1305,6 +1315,8 @@ def FindNormalizedRatio(NTS_count, TS_count, NTS_numbers, TS_numbers):
     return NTS_percentage, TS_percentage
 
 
+FindNormalizedRatio(low_cutaneous[0] + low_cutaneous[1], low_cutaneous[2] + low_cutaneous[3], T_NTS_base2 + C_NTS_base2, T_TS_base2 + C_TS_base2)
+FindNormalizedRatio(high_cutaneous[0] + high_cutaneous[1], high_cutaneous[2] + high_cutaneous[3], T_NTS_base3 + C_NTS_base3, T_TS_base3 + C_TS_base3)
 
 FindNormalizedRatio(low_cutaneous[0], low_cutaneous[2], T_NTS_base2, T_TS_base2)
 FindNormalizedRatio(low_cutaneous[1], low_cutaneous[3], C_NTS_base2, C_TS_base2)
@@ -1318,3 +1330,10 @@ FindNormalizedRatio (high_cutaneous_homopolymer[0] +high_cutaneous_homopolymer[1
 FindNormalizedRatio (high_cutaneous_homopolymer[0] + high_cutaneous_homopolymer2[0], high_cutaneous_homopolymer[2] + high_cutaneous_homopolymer2[2],NTS_base2_T,TS_base2_T)
 
 FindNormalizedRatio (high_cutaneous_homopolymer[1] + high_cutaneous_homopolymer2[1], high_cutaneous_homopolymer[3] +high_cutaneous_homopolymer2[3],NTS_base2_C,TS_base2_C)
+
+FindNormalizedRatio (low_cutaneous_homopolymer[0] +low_cutaneous_homopolymer[1] + low_cutaneous_homopolymer2[0] +low_cutaneous_homopolymer2[1], low_cutaneous_homopolymer[2] +low_cutaneous_homopolymer[3] + low_cutaneous_homopolymer2[2] +low_cutaneous_homopolymer2[3],NTS_base3_T + NTS_base3_C,TS_base3_T + TS_base3_C)
+
+
+FindNormalizedRatio (low_cutaneous_homopolymer[0] + low_cutaneous_homopolymer2[0], low_cutaneous_homopolymer[2] + low_cutaneous_homopolymer2[2],NTS_base3_T,TS_base3_T)
+
+FindNormalizedRatio (low_cutaneous_homopolymer[1] + low_cutaneous_homopolymer2[1], low_cutaneous_homopolymer[3] +low_cutaneous_homopolymer2[3],NTS_base3_C,TS_base3_C)
