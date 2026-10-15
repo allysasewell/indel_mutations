@@ -2400,7 +2400,7 @@ def MutationsPerTumor(mutation_type, allele, mutation, tumor_number):
     for i in range(0, len(mutation_type)):
         if mutation_type[i] == 'deletion':# and len(allele[i]) > 1:
             deletion_number = deletion_number + 1
-        if mutation_type[i] == 'insertion:':# and len(mutation[i]) > 1:
+        if mutation_type[i] == 'insertion':# and len(mutation[i]) > 1:
             insertion_number = insertion_number + 1
             
     print(deletion_number / tumor_number)
@@ -2421,18 +2421,18 @@ def HomopolymerMutationsPerTumor(lengths, mutation_type, tumor_number, allele, m
         if lengths[i] != 'NA':
             if lengths[i] > 3:
                 homopolymer = homopolymer + 1
-                if mutation_type[i] == 'deletion' and len(allele[i]) == 1:
+                if mutation_type[i] == 'deletion':# and len(allele[i]) > 1:
                     deletion_lengths.append(lengths[i])
                     deletion_homopolymer = deletion_homopolymer + 1
-                if mutation_type[i] == 'insertion' and len(mutation[i]) == 1:
+                if mutation_type[i] == 'insertion':# and len(mutation[i]) > 1:
                     insertion_lengths.append(lengths[i])
                     insertion_homopolymer = insertion_homopolymer + 1
             else:
                 nonhomopolymer = nonhomopolymer + 1
-                if mutation_type[i] == 'deletion' and len(allele[i]) == 1:
+                if mutation_type[i] == 'deletion':# and len(allele[i]) > 1:
                     deletion_lengths.append(lengths[i])
                     deletion_nonhomopolymer = deletion_nonhomopolymer + 1
-                if mutation_type[i] == 'insertion' and len(mutation[i]) == 1:
+                if mutation_type[i] == 'insertion' :#and len(mutation[i]) > 1:
                     insertion_lengths.append(lengths[i])
                     insertion_nonhomopolymer = insertion_nonhomopolymer + 1
     print(nonhomopolymer / tumor_number)
@@ -2458,6 +2458,11 @@ f9 = open('new_acral_polymer_lengths__single_insertions10+.txt', 'w+')
 f11 = open('new_cutaneous_polymer_lengths_single_deletions10+.txt', 'w+')
 f12 = open('new_cutaneous_polymer_lengths_single_insertions10+.txt', 'w+')
 f13 = open('new_homopolymer_counts10+.txt', 'w+')
+
+f14 = open('new_acral_polymer_lengths_single_deletions10+_counts.txt', 'w+')
+f15 = open('new_acral_polymer_lengths__single_insertions10+_counts.txt', 'w+')
+f11 = open('new_cutaneous_polymer_lengths_single_deletions10+_counts.txt', 'w+')
+f12 = open('new_cutaneous_polymer_lengths_single_insertions10+_counts.txt', 'w+')
 
 
 
@@ -2525,9 +2530,10 @@ def NormalizeHomopolymer(sequences, lengths, file):
     C_dict[1] = 0
     T_dict[1] = 0
     for key in chromosome_sequences.keys():
+        print(key)
         coordinates = []
         sequence = chromosome_sequences[key]
-        if sequence[len(sequence) - 1] != sequence[len(sequence) - 2]:
+        if sequence[len(sequence) - 1] != sequence[len(sequence) - 2] and sequence[len(sequence) - 1] != 'N':
             homopolymer_dict[1] = homopolymer_dict[1] + 1
             if sequence[len(sequence) - 1] == 'C' or sequence[len(sequence) - 1] == 'G':
                 C_dict[1] = C_dict[1] + 1
@@ -2636,7 +2642,7 @@ def NormalizeHomopolymer(sequences, lengths, file):
 
 
 
-def PrintFrequencies(homopolymer_dict, C_dict, T_dict, lengths, mutation_type, allele, mutation, file, file2, tumor_number ):
+def PrintFrequencies(homopolymer_dict, C_dict, T_dict, lengths, mutation_type, allele, mutation, file, file2, file3, file4, tumor_number ):
     homopolymer_counts = {}
     deletion_counts = {}
     insertion_counts = {}
@@ -2840,39 +2846,51 @@ def PrintFrequencies(homopolymer_dict, C_dict, T_dict, lengths, mutation_type, a
                                 T_insertion_counts['11-15'] = T_insertion_counts['11-15'] + 1
     for key in deletion_counts.keys():
         if homopolymer_dict[key] != 0:
+            file3.write(str(key) + ':' + str(deletion_counts[key]/tumor_number))
+            file3.write('\n')
             deletion_counts[key] = deletion_counts[key]/homopolymer_dict[key]
             file.write(str(key) + ':' + str(deletion_counts[key]/tumor_number))
             file.write('\n')
     for key in insertion_counts.keys():
         if homopolymer_dict[key] != 0:
+            file4.write(str(key) + ':' + str(insertion_counts[key]/tumor_number))
+            file4.write('\n')
             insertion_counts[key] = insertion_counts[key]/homopolymer_dict[key]
             file2.write(str(key) + ':' + str(insertion_counts[key]/tumor_number))
             file2.write('\n')
     for key in C_deletion_counts.keys():
         if C_dict[key] != 0:
+            file3.write(str(key) + ':' + str(C_deletion_counts[key]/tumor_number))
+            file3.write('\n')
             C_deletion_counts[key] = C_deletion_counts[key]/C_dict[key]
             file.write(str(key) + ':' + str(C_deletion_counts[key]/tumor_number))
             file.write('\n')
     for key in C_insertion_counts.keys():
         if C_dict[key] != 0:
+            file4.write(str(key) + ':' + str(C_insertion_counts[key]/ tumor_number))
+            file4.write('\n')
             C_insertion_counts[key] = C_insertion_counts[key]/C_dict[key]
             file2.write(str(key) + ':' + str(C_insertion_counts[key]/ tumor_number))
             file2.write('\n')
     for key in T_deletion_counts.keys():
         if T_dict[key] != 0:
+            file3.write(str(key) + ':' + str(T_deletion_counts[key]/ tumor_number))
+            file3.write('\n')
             T_deletion_counts[key] = T_deletion_counts[key]/T_dict[key]
             file.write(str(key) + ':' + str(T_deletion_counts[key]/ tumor_number))
             file.write('\n')
     for key in T_insertion_counts.keys():
         if T_dict[key] != 0:
+            file4.write(str(key) + ':' + str(T_insertion_counts[key] / tumor_number))
+            file4.write('\n')
             T_insertion_counts[key] = T_insertion_counts[key]/T_dict[key]
             file2.write(str(key) + ':' + str(T_insertion_counts[key] / tumor_number))
             file2.write('\n')
 
 
 homopolymer_numbers = NormalizeHomopolymer(sequences, lengths, f13)       
-PrintFrequencies(homopolymer_numbers[0], homopolymer_numbers[1], homopolymer_numbers[2], lengths, mutation_type, allele, mutation, f8, f9, 35)
-PrintFrequencies(homopolymer_numbers[0], homopolymer_numbers[1], homopolymer_numbers[2], lengths2, mutationtype_2, allele2, mutation2, f11, f12, 140)
+PrintFrequencies(homopolymer_numbers[0], homopolymer_numbers[1], homopolymer_numbers[2], lengths, mutation_type, allele, mutation, f8, f9, f14, f15, 35)
+PrintFrequencies(homopolymer_numbers[0], homopolymer_numbers[1], homopolymer_numbers[2], lengths2, mutationtype_2, allele2, mutation2, f11, f12, f16, f17,140)
 coordinates = homopolymer_numbers[3]
 
 
@@ -2881,4 +2899,8 @@ f9.close()
 f11.close()
 f12.close()
 f13.close()
+f14.close()
+f15.close()
+f16.close()
+f17.close()
 
